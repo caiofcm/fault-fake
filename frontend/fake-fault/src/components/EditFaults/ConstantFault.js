@@ -39,13 +39,22 @@ const styles = theme => ({
 
 class ConstantFault extends Component {
 
-  state = {
-    value: 0.0
-  }
+  // state = {
+  //   // value: 0.0,
+  //   faultConfig: {
+  //     value: 0.0,
+  //   }
+  // }
 
-  handleChange = (event) => {
-    this.setState({ value: event.target.value })
-  }
+  // handleChange = (event) => {
+  //   console.log(this.props.faultConfig.value)
+  //   this.props.handleFaultConfig(event)
+  //   // const faultConfig = { ...this.state.faultConfig }
+  //   // faultConfig.value = event.target.value
+  //   // console.log(event.target.value)
+  //   // console.log(this.state.faultConfig.value)
+  //   // this.setState({ faultConfig })
+  // }
 
   render() {
     const classes = this.props.classes
@@ -54,13 +63,13 @@ class ConstantFault extends Component {
         <TextField
           id="outlined-number"
           label="Value"
-          value={this.state.value}
-          onChange={this.handleChange}
+          value={this.props.faultConfig.value}
+          onChange={this.props.handleFaultConfig}
           type="number"
           className={classes.textField}
-          InputLabelProps={{
-            shrink: true,
-          }}
+          // InputLabelProps={{
+          //   shrink: true,
+          // }}
           margin="normal"
           variant="outlined"
         />

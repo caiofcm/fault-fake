@@ -4,6 +4,7 @@ import Plot from 'react-plotly.js'
 import { Paper } from '@material-ui/core';
 import FormEdit from './FormEdit'
 import Button from '@material-ui/core/Button';
+import { browserHistory } from 'react-router';
 
 const styles = theme => ({
   root: {
@@ -13,11 +14,6 @@ const styles = theme => ({
   wrapPaper: {
 
   },
-  // content: {
-  //   padding: theme.spacing.unit * 3,
-  //   height: '100vh',
-  //   overflow: 'auto',
-  // },
   paper: {
     flexGrow: 1,
     padding: theme.spacing.unit * 3,
@@ -36,6 +32,9 @@ const styles = theme => ({
   margin: {
     margin: theme.spacing.unit,
   },
+  button: {
+    width: 100,
+  },
   textField: {
     flexBasis: 200,
   },
@@ -45,6 +44,12 @@ class EditFaults extends Component {
 
   state = {
     checkedSelection: false,
+    lowBound: 0,
+    uppBound: 0,
+    faultConfig: {
+      value: 0.0
+    },
+    faultType: 'constant',
   }
 
   // myDiv.on('plotly_relayout',
@@ -61,22 +66,54 @@ class EditFaults extends Component {
       return
     }
     if (this.state.checkedSelection) {
-      alert('ZOOM!' + '\n\n' +
-        'Event data:' + '\n' +
-        JSON.stringify(eventdata) + '\n\n' +
-        'x-axis start:' + eventdata['xaxis.range[0]'] + '\n' +
-        'x-axis end:' + eventdata['xaxis.range[1]'])
+      const valLow = Math.floor(eventdata['xaxis.range[0]'])
+      const valUpp = Math.floor(eventdata['xaxis.range[1]'])
+      console.log(eventdata)
+      console.log(eventdata['xaxis.range[0]'])
+      console.log(this.state.lowBound)
+      this.setState({
+        lowBound: valLow,
+        uppBound: valUpp,
+      })
+      // alert('ZOOM!' + '\n\n' +
+      //   'Event data:' + '\n' +
+      //   JSON.stringify(eventdata) + '\n\n' +
+      //   'x-axis start:' + eventdata['xaxis.range[0]'] + '\n' +
+      //   'x-axis end:' + eventdata['xaxis.range[1]'])
     }
   }
 
-  conditionalHandleRelayout = (event) => {
-    if (this.state.checkedSelection) {
-      this.handleReLayout(event)
-    }
-  }
+  // conditionalHandleRelayout = (event) => {
+  //   if (this.state.checkedSelection) {
+  //     this.handleReLayout(event)
+  //   }
+  // }
 
   handleCheckedSelection = (event) => {
     this.setState({ checkedSelection: event.target.checked })
+  }
+
+  handleLowBound = (event) => {
+    const val = event.target.value
+    this.setState({ lowBound: val })
+  }
+
+  handleUppBound = (event) => {
+    const val = event.target.value
+    this.setState(() => {
+      return { uppBound: val}
+    })
+  }
+
+  handleFaultConfig = (event) => {
+    const faultConfig = { ...this.state.faultConfig }
+    faultConfig.value = event.target.value
+    console.log(this.state.faultConfig.value)
+    this.setState({ faultConfig })
+  }
+
+  handleBackBut = (event) => {
+
   }
 
   buildPlot(classes, serie) {
@@ -88,12 +125,24 @@ class EditFaults extends Component {
             // x: [1, 2, 3],
             y: serie.values,
             type: 'scatter',
-            mode: 'lines+points',
-            marker: { color: 'black' },
+            mode: 'lines+markers',
+            marker: { color: 'black', symbol: 'circle-open', size: 12 },
           },
         ]}
         layout={{ title: serie.tag }}
       />
+    )
+  }
+
+  handleTypeSelection = (event) => {
+    console.log(event);
+    this.setState({ faultType: event.target.value });
+  }
+
+  handleEdit = (e, id) => {
+    this.props.handleEditBut(e, id, this.state.faultConfig,
+      {lowBound: this.state.lowBound, uppBound: this.state.uppBound },
+      this.state.faultType
     )
   }
 
@@ -103,28 +152,33 @@ class EditFaults extends Component {
     const serie = this.props.data.filter(v => v.id === id)[0]
     return (
       <div className={classes.root}>
-        {/* <div className={classes.wrapPaper}> */}
         <Paper className={classes.paper}>
           <div className={classes.wrapMain}>
             {this.buildPlot(classes, serie)}
             <FormEdit
               checkedSelection={this.state.checkedSelection}
               handleCheckedSelection={this.handleCheckedSelection}
-            // faultType={this.state.faultType}
-            // handleTypeSelection={this.handleTypeSelection}
+              lowBound={this.state.lowBound}
+              handleLowBound={this.handleLowBound}
+              uppBound={this.state.uppBound}
+              handleUppBound={this.handleUppBound}
+              faultConfig={this.state.faultConfig}
+              handleFaultConfig={this.handleFaultConfig}
+              faultType={this.state.faultType}
+              handleTypeSelection={this.handleTypeSelection}
             >
             </FormEdit>
           </div>
           <div className={classes.wrapButtons}>
             <Button
-              className={classes.margin}
-              variant="contained" color="primary" className={classes.button}>
+              variant="contained" color="primary" className={classes.button}
+              onClick={(e) => this.handleEdit(e, id)}>
               Edit
               </Button>
             <Button
-              className={classes.margin}
-              variant="contained" color="secondary" className={classes.button}>
-              Cancel
+              variant="contained" color="secondary" className={classes.button}
+              onClick={this.handleBackBut}>
+              Back
             </Button>
           </div>
         </Paper>

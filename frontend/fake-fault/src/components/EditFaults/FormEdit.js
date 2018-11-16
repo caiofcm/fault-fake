@@ -31,6 +31,8 @@ const styles = theme => ({
   },
   textField: {
     flexBasis: 200,
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
   },
   formControl: {
     margin: theme.spacing.unit,
@@ -39,19 +41,19 @@ const styles = theme => ({
 })
 
 const faultTypesSelections = [
-    { value: 'constant', label: 'Constant' },
-    { value: 'random', label: 'Random' },
-    { value: 'arima', label: 'ARIMA' },
-    { value: 'ramp', label: 'Ramp' },
-    { value: 'senoidal', label: 'Senoidal' },
-  ]
+  { value: 'constant', label: 'Constant' },
+  { value: 'random', label: 'Random' },
+  { value: 'arima', label: 'ARIMA' },
+  { value: 'ramp', label: 'Ramp' },
+  { value: 'senoidal', label: 'Senoidal' },
+]
 
 class FormEdit extends Component {
   // const classes = props.classes
 
   state = {
     labelWidth: 0,
-    faultType: 'constant',
+    // faultType: 'constant',
   };
 
   componentDidMount() {
@@ -65,25 +67,27 @@ class FormEdit extends Component {
   }
 
   addFormAfterTypeSelection = () => {
-    switch (this.state.faultType) {
+    switch (this.props.faultType) {
       case 'constant':
-        return (<ConstantFault></ConstantFault>)
-        break;
-
+        return (
+        <ConstantFault
+          faultConfig={this.props.faultConfig}
+          handleFaultConfig={this.props.handleFaultConfig}>
+        </ConstantFault>)
       default:
         break;
     }
   }
 
-  handleTypeSelection = (event) => {
-    console.log(event);
-    this.setState({ faultType: event.target.value });
+  // handleTypeSelection = (event) => {
+  //   console.log(event);
+  //   this.setState({ faultType: event.target.value });
 
-  }
+  // }
 
   render() {
     const props = this.props
-    const classes = props.classes;
+    const classes = props.classes
     return (
       <div className={classes.root}>
         <FormControlLabel
@@ -95,8 +99,33 @@ class FormEdit extends Component {
               color="primary"
             />
           }
-          label="Selected Region to Add Fault"
+          label="Select Region in Chart to Add Fault"
         />
+
+        <div>
+          <TextField
+            id="outlined-helperText"
+            label="Lower Bound"
+            // defaultValue=""
+            className={classes.textField}
+            // helperText="Corresponding t"
+            value={props.lowBound}
+            onChange={props.handleLowBound}
+            margin="normal"
+            variant="outlined"
+          />
+          <TextField
+            id="outlined-helperText"
+            label="Upper Bound"
+            // defaultValue=""
+            value={props.uppBound}
+            onChange={props.handleUppBound}
+            className={classes.textField}
+            // helperText="Corresponding t"
+            margin="normal"
+            variant="outlined"
+          />
+        </div>
         <FormControl variant="outlined" className={classes.formControl}>
           <InputLabel
             ref={ref => {
@@ -107,8 +136,8 @@ class FormEdit extends Component {
             Fault Type
           </InputLabel>
           <Select
-            value={this.state.faultType}
-            onChange={this.handleTypeSelection}
+            value={this.props.faultType}
+            onChange={this.props.handleTypeSelection}
             input={
               <OutlinedInput
                 labelWidth={this.state.labelWidth}
@@ -119,10 +148,10 @@ class FormEdit extends Component {
           >
             {faultTypesSelections.map(v => {
               return (
-              <MenuItem value={v.value}
-                key={v.value}>
-                {v.label}
-              </MenuItem>
+                <MenuItem value={v.value}
+                  key={v.value}>
+                  {v.label}
+                </MenuItem>
               )
             })}
           </Select>

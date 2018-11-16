@@ -123,7 +123,7 @@ class Dashboard extends React.Component {
   };
 
   render() {
-    const { classes, data } = this.props;
+    const { classes, data, handleEditBut } = this.props;
 
     return (
       <div className={classes.root}>
@@ -183,7 +183,7 @@ class Dashboard extends React.Component {
           <Route exact path="/data" render={props =>
             <Table data={data}></Table>} />
           <Route path={`/data/:id`} render={props =>
-            <EditFaults {...props} data={data}></EditFaults>} />
+            <EditFaults {...props} data={data} handleEditBut={handleEditBut}></EditFaults>} />
           <Route path="/create" render={props =>
             <CreateSeries data={data}></CreateSeries>} />
         </main>
