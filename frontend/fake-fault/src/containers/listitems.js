@@ -18,7 +18,7 @@ import { Link } from "react-router-dom"
 
 export const mainListItems = (classes, handleNestedClick, openNested) => (
   <div>
-    <ListItem component={Link} to="/" button>
+    <ListItem component={Link} to="/data" button>
       <ListItemIcon>
         <DashboardIcon />
       </ListItemIcon>
@@ -52,9 +52,9 @@ export const mainListItems = (classes, handleNestedClick, openNested) => (
             <StarBorder />
           </ListItemIcon>
           <ListItemText inset primary="Import" />
-        </ListItem>        
+        </ListItem>
       </List>
-    </Collapse>    
+    </Collapse>
     <ListItem component={Link} to="/custom" button>
       <ListItemIcon>
         <AssignmentIcon />

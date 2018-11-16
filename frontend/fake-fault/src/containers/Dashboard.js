@@ -20,6 +20,7 @@ import Table from '../components/Table/Table';
 import LoadSeries from '../components/LoadSeries/LoadSeries';
 import CreateSeries from '../components/CreateSeries/CreateSeries';
 import { Route } from "react-router-dom"
+import EditFaults from '../components/EditFaults/EditFaults';
 
 const drawerWidth = 240;
 
@@ -119,7 +120,7 @@ class Dashboard extends React.Component {
 
   handleNestedClick = () => {
     this.setState(state => ({ openNested: !state.openNested }));
-  };  
+  };
 
   render() {
     const { classes, data } = this.props;
@@ -179,7 +180,10 @@ class Dashboard extends React.Component {
 
           <Route exact path="/" render={props =>
             <Table data={data}></Table>} />
-          {/* <Route path="/create" component={SimpleLineChart} /> */}
+          <Route exact path="/data" render={props =>
+            <Table data={data}></Table>} />
+          <Route path={`/data/:id`} render={props =>
+            <EditFaults {...props} data={data}></EditFaults>} />
           <Route path="/create" render={props =>
             <CreateSeries data={data}></CreateSeries>} />
         </main>
