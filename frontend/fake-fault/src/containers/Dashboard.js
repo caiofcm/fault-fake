@@ -22,6 +22,7 @@ import CreateSeries from '../components/CreateSeries/CreateSeries';
 import { Route } from "react-router-dom"
 import EditFaults from '../components/EditFaults/EditFaults';
 import Visualize from '../components/Visualize/Visualize';
+import Import from '../components/Import/SendToServerExample';
 
 const drawerWidth = 240;
 
@@ -189,6 +190,8 @@ class Dashboard extends React.Component {
             <CreateSeries data={data}></CreateSeries>} />
           <Route path="/visualize" render={props =>
             <Visualize data={data}></Visualize>} />
+          <Route path="/import" render={props =>
+            <Import onFileLoad={this.props.onFileLoad}></Import>} />
         </main>
       </div>
     );

@@ -21,9 +21,14 @@ class Manager extends Component {
     data: loadData()
   }
 
+
+  onFileLoad = (e) => {
+    const content = e.currentTarget.result
+    console.log(content)
+  }
+
   handleEditBut = (e, id, faultConfig, bounds, faultType) => {
     const serie = this.state.data.filter(v => v.id === id)[0]
-
     let signal
     switch (faultType) {
       case 'constant':
@@ -41,11 +46,6 @@ class Manager extends Component {
     serieMod.faultAdded = true
     data[index] = serieMod
     this.setState({ data })
-
-    console.log(serieMod)
-    console.log(signal)
-    console.log(index)
-    console.log(this.state.data[index])
   }
 
   render() {
@@ -53,6 +53,7 @@ class Manager extends Component {
       <Dashboard
         data={this.state.data}
         handleEditBut={this.handleEditBut}
+        onFileLoad={this.onFileLoad}
       ></Dashboard>
     );
   }

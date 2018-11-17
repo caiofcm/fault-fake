@@ -30,7 +30,8 @@ function Visualize(props) {
       <Paper className={classes.paper}>
         {props.data.map((v) => {
           return (
-            <Card className={classes.card}>
+            <Card className={classes.card}
+              key={v.id}>
              <PlotData serie={v}/>
             </Card>
           )
