@@ -21,6 +21,7 @@ import LoadSeries from '../components/LoadSeries/LoadSeries';
 import CreateSeries from '../components/CreateSeries/CreateSeries';
 import { Route } from "react-router-dom"
 import EditFaults from '../components/EditFaults/EditFaults';
+import Visualize from '../components/Visualize/Visualize';
 
 const drawerWidth = 240;
 
@@ -186,6 +187,8 @@ class Dashboard extends React.Component {
             <EditFaults {...props} data={data} handleEditBut={handleEditBut}></EditFaults>} />
           <Route path="/create" render={props =>
             <CreateSeries data={data}></CreateSeries>} />
+          <Route path="/visualize" render={props =>
+            <Visualize data={data}></Visualize>} />
         </main>
       </div>
     );

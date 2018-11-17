@@ -31,14 +31,14 @@ function createData(name, calories, fat, carbs, protein) {
 }
 
 function float_format(num) {
-  return (num > 1e3 || num < 1e-3) ? num.toExponential(4) : num.toFixed(4)
+  return (num > 1e3 || (num !== 0 && num < 1e-3)) ? num.toExponential(4) : num.toFixed(4)
 }
 
 function computeData(data) {
   return {
     id: data.id,
     name: data.tag,
-    fault: 'none',
+    fault: data.faultAdded,
     min: float_format(Math.min(...data.values)),
     max: float_format(Math.max(...data.values)),
     size: data.values.length,
@@ -76,7 +76,7 @@ function getSorting(order, orderBy) {
 const rows = [
   { id: 'tag', numeric: false, disablePadding: true, label: 'TAG' },
   { id: 'custom', numeric: false, disablePadding: false, label: 'Customize' },
-  { id: 'faults', numeric: false, disablePadding: false, label: 'Fault Types' },
+  { id: 'faults', numeric: false, disablePadding: false, label: 'Fault Edited' },
   { id: 'min', numeric: true, disablePadding: false, label: 'Min.' },
   { id: 'max', numeric: true, disablePadding: false, label: 'Max.' },
   { id: 'size', numeric: true, disablePadding: false, label: 'Size' },
@@ -325,11 +325,11 @@ class EnhancedTable extends React.Component {
                       </TableCell>
                       <TableCell component={Link} to={`/data/${n.id}`} serie={n}>
                         <IconButton aria-label="Edit">
-                          <EditIcon  />
+                          <EditIcon />
                         </IconButton>
                       </TableCell>
                       <TableCell >
-                        {n.fault}
+                        {n.fault ? 'Yes': 'No'}
                       </TableCell>
                       <TableCell numeric>{n.min}</TableCell>
                       <TableCell numeric>{n.max}</TableCell>

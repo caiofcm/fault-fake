@@ -38,6 +38,7 @@ class Manager extends Component {
     const index = data.findIndex(v => v.id === id)
     let serieMod = {...data[index]}
     serieMod.values = signal
+    serieMod.faultAdded = true
     data[index] = serieMod
     this.setState({ data })
 

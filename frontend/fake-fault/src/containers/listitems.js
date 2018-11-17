@@ -55,11 +55,11 @@ export const mainListItems = (classes, handleNestedClick, openNested) => (
         </ListItem>
       </List>
     </Collapse>
-    <ListItem component={Link} to="/custom" button>
+    <ListItem component={Link} to="/visualize" button>
       <ListItemIcon>
         <AssignmentIcon />
       </ListItemIcon>
-      <ListItemText primary="Customize Faults" />
+      <ListItemText primary="Visualize All" />
     </ListItem>
   </div>
 );

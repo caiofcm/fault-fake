@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import { withStyles } from '@material-ui/core/styles';
-import Plot from 'react-plotly.js'
+// import Plot from 'react-plotly.js'
 import { Paper } from '@material-ui/core';
 import FormEdit from './FormEdit'
 import Button from '@material-ui/core/Button';
+import PlotData from '../PlotData/PlotData'
 import { browserHistory } from 'react-router';
 
 const styles = theme => ({
@@ -113,25 +114,7 @@ class EditFaults extends Component {
   }
 
   handleBackBut = (event) => {
-
-  }
-
-  buildPlot(classes, serie) {
-    return (
-      <Plot
-        onRelayout={this.handleReLayout}
-        data={[
-          {
-            // x: [1, 2, 3],
-            y: serie.values,
-            type: 'scatter',
-            mode: 'lines+markers',
-            marker: { color: 'black', symbol: 'circle-open', size: 12 },
-          },
-        ]}
-        layout={{ title: serie.tag }}
-      />
-    )
+    this.props.history.goBack()
   }
 
   handleTypeSelection = (event) => {
@@ -154,7 +137,7 @@ class EditFaults extends Component {
       <div className={classes.root}>
         <Paper className={classes.paper}>
           <div className={classes.wrapMain}>
-            {this.buildPlot(classes, serie)}
+            <PlotData serie={serie} handleReLayout={this.handleReLayout} />
             <FormEdit
               checkedSelection={this.state.checkedSelection}
               handleCheckedSelection={this.handleCheckedSelection}
