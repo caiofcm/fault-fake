@@ -6,6 +6,7 @@ import FormEdit from './FormEdit'
 import Button from '@material-ui/core/Button';
 import PlotData from '../PlotData/PlotData'
 import { browserHistory } from 'react-router';
+import { observer, inject } from 'mobx-react'
 
 const styles = theme => ({
   root: {
@@ -132,7 +133,8 @@ class EditFaults extends Component {
   render() {
     const { classes } = this.props;
     const id = parseInt(this.props.match.params.id)
-    const serie = this.props.data.filter(v => v.id === id)[0]
+    const serie = this.props.store.series.filter(v => v.id === id)[0]
+    // const serie = this.props.data.filter(v => v.id === id)[0]
     return (
       <div className={classes.root}>
         <Paper className={classes.paper}>
@@ -174,7 +176,9 @@ class EditFaults extends Component {
   }
 }
 
-export default withStyles(styles)(EditFaults)
+// export default withStyles(styles)(EditFaults)
+const styled = withStyles(styles)(EditFaults)
+export default inject(["store"])(observer(styled))
 
 // function EditFaultsF(props) {
 //   console.log(props);

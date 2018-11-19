@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Dashboard from './Dashboard'
 import loadData from '../data-provider/data-provider';
+import { observer, inject } from 'mobx-react'
 
 function constantFault(inputs) {
   const { serie, faultConfig, bounds } = inputs
@@ -9,8 +10,8 @@ function constantFault(inputs) {
   // serieMod[bounds.lowBound]
   console.log(bounds, value)
   const serieMod = serie.values.map((v, i) => {
-      return (i >= bounds.lowBound && i <= bounds.uppBound) ?
-              value : v
+    return (i >= bounds.lowBound && i <= bounds.uppBound) ?
+      value : v
   })
   return serieMod
 }
@@ -18,7 +19,7 @@ function constantFault(inputs) {
 class Manager extends Component {
 
   state = {
-    data: loadData()
+    data: loadData() // this.props.store.series //loadData()
   }
 
 
@@ -32,7 +33,7 @@ class Manager extends Component {
     let signal
     switch (faultType) {
       case 'constant':
-        signal = constantFault({serie, faultConfig, bounds})
+        signal = constantFault({ serie, faultConfig, bounds })
         break;
 
       default:
@@ -41,7 +42,7 @@ class Manager extends Component {
 
     let data = [...this.state.data]
     const index = data.findIndex(v => v.id === id)
-    let serieMod = {...data[index]}
+    let serieMod = { ...data[index] }
     serieMod.values = signal
     serieMod.faultAdded = true
     data[index] = serieMod
@@ -50,13 +51,15 @@ class Manager extends Component {
 
   render() {
     return (
-      <Dashboard
-        data={this.state.data}
-        handleEditBut={this.handleEditBut}
-        onFileLoad={this.onFileLoad}
-      ></Dashboard>
-    );
+        <Dashboard
+          data={this.state.data}
+          handleEditBut={this.handleEditBut}
+          onFileLoad={this.onFileLoad}
+        ></Dashboard>
+    )
   }
 }
 
-export default Manager;
+// export default Manager;
+export default inject("store", "routing")(observer(Manager))
+

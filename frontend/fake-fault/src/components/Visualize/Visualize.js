@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card';
 import Paper from '@material-ui/core/Card';
 import PlotData from '../PlotData/PlotData'
+import { observer, inject } from 'mobx-react'
 
 const styles = theme => ({
   root: {
@@ -25,10 +26,11 @@ const styles = theme => ({
 
 function Visualize(props) {
   const { classes } = props
+  const series = props.store.series
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        {props.data.map((v) => {
+        {series.map((v) => {
           return (
             <Card className={classes.card}
               key={v.id}>
@@ -41,4 +43,6 @@ function Visualize(props) {
   )
 }
 
-export default withStyles(styles)(Visualize)
+// export default withStyles(styles)(Visualize)
+const styled = withStyles(styles)(Visualize)
+export default inject("store", "routing")(observer(styled))

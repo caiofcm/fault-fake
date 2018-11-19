@@ -23,6 +23,7 @@ import Icon from '@material-ui/core/Icon'
 import EditIcon from '@material-ui/icons/EditOutlined'
 import { Link } from "react-router-dom"
 import { lighten } from '@material-ui/core/styles/colorManipulator'
+import { observer, inject } from 'mobx-react'
 
 let counter = 0
 function createData(name, calories, fat, carbs, protein) {
@@ -229,7 +230,7 @@ class EnhancedTable extends React.Component {
     order: 'asc',
     orderBy: 'calories',
     selected: [],
-    data: computeAllData(this.props.data),
+    data: computeAllData(this.props.store.series), //computeAllData(this.props.data),
     page: 0,
     rowsPerPage: 5,
   }
@@ -360,6 +361,7 @@ class EnhancedTable extends React.Component {
           onChangePage={this.handleChangePage}
           onChangeRowsPerPage={this.handleChangeRowsPerPage}
         />
+        <h3>{this.props.store.author.name}</h3>
       </Paper>
     )
   }
@@ -369,4 +371,6 @@ EnhancedTable.propTypes = {
   classes: PropTypes.object.isRequired,
 }
 
-export default withStyles(styles)(EnhancedTable)
+const styled = withStyles(styles)(EnhancedTable)
+export default inject("store", "routing")(observer(styled))
+

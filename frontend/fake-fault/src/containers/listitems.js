@@ -16,50 +16,54 @@ import InboxIcon from '@material-ui/icons/MoveToInbox';
 import { Link } from "react-router-dom"
 
 
-export const mainListItems = (classes, handleNestedClick, openNested) => (
-  <div>
-    <ListItem component={Link} to="/data" button>
-      <ListItemIcon>
-        <DashboardIcon />
-      </ListItemIcon>
-      <ListItemText primary="Data Series" />
-    </ListItem>
-    {/* <ListItem component={Link} to="/create" button>
+export const mainListItems = (classes, handleNestedClick, openNested, routing) => {
+  const { location, push, goBack } = routing
+  return (
+    <div>
+      {/* <button onClick={() => push('/data')}></button> */}
+      <ListItem component={Link} to="/data" button>
+        <ListItemIcon>
+          <DashboardIcon />
+        </ListItemIcon>
+        <ListItemText primary="Data Series" />
+      </ListItem>
+      {/* <ListItem component={Link} to="/create" button>
       <ListItemIcon>
         <LayersIcon />
       </ListItemIcon> */}
       {/* <ListItemText primary="Create/Load Series" /> */}
-    {/* </ListItem> */}
-    <ListItem button onClick={handleNestedClick}>
-      <ListItemIcon>
-        <InboxIcon />
-      </ListItemIcon>
-      <ListItemText inset primary="New Series" />
-      {openNested ? <ExpandLess /> : <ExpandMore />}
-    </ListItem>
-    <Collapse in={openNested} timeout="auto" unmountOnExit>
-      <List component="div" disablePadding>
-        <ListItem button className={classes.nested}
-          component={Link} to="/create">
-          <ListItemIcon>
-            <StarBorder />
-          </ListItemIcon>
-          <ListItemText inset primary="Generate" />
-        </ListItem>
-        <ListItem button className={classes.nested}
-          component={Link} to="/import">
-          <ListItemIcon>
-            <StarBorder />
-          </ListItemIcon>
-          <ListItemText inset primary="Import" />
-        </ListItem>
-      </List>
-    </Collapse>
-    <ListItem component={Link} to="/visualize" button>
-      <ListItemIcon>
-        <AssignmentIcon />
-      </ListItemIcon>
-      <ListItemText primary="Visualize All" />
-    </ListItem>
-  </div>
-);
+      {/* </ListItem> */}
+      <ListItem button onClick={handleNestedClick}>
+        <ListItemIcon>
+          <InboxIcon />
+        </ListItemIcon>
+        <ListItemText inset primary="New Series" />
+        {openNested ? <ExpandLess /> : <ExpandMore />}
+      </ListItem>
+      <Collapse in={openNested} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          <ListItem button className={classes.nested}
+            component={Link} to="/create">
+            <ListItemIcon>
+              <StarBorder />
+            </ListItemIcon>
+            <ListItemText inset primary="Generate" />
+          </ListItem>
+          <ListItem button className={classes.nested}
+            component={Link} to="/import">
+            <ListItemIcon>
+              <StarBorder />
+            </ListItemIcon>
+            <ListItemText inset primary="Import" />
+          </ListItem>
+        </List>
+      </Collapse>
+      <ListItem component={Link} to="/visualize" button>
+        <ListItemIcon>
+          <AssignmentIcon />
+        </ListItemIcon>
+        <ListItemText primary="Visualize All" />
+      </ListItem>
+    </div>
+  )
+}
