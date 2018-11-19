@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
+import { observer } from 'mobx-react'
 import Dashboard from './Dashboard'
-import loadData from '../data-provider/data-provider';
+import loadData from '../data-provider/data-provider'
 
 function constantFault(inputs) {
   const { serie, faultConfig, bounds } = inputs
@@ -15,6 +16,7 @@ function constantFault(inputs) {
   return serieMod
 }
 
+// const Manager = observer(
 class Manager extends Component {
 
   state = {
@@ -58,5 +60,6 @@ class Manager extends Component {
     );
   }
 }
+// )
 
 export default Manager;

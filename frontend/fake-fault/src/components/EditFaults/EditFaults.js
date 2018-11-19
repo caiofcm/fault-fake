@@ -5,7 +5,7 @@ import { Paper } from '@material-ui/core';
 import FormEdit from './FormEdit'
 import Button from '@material-ui/core/Button';
 import PlotData from '../PlotData/PlotData'
-import { browserHistory } from 'react-router';
+// import { browserHistory } from 'react-router';
 
 const styles = theme => ({
   root: {
@@ -166,8 +166,6 @@ class EditFaults extends Component {
           </div>
         </Paper>
         {/* </div> */}
-
-
 
       </div>
     );
