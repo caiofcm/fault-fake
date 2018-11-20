@@ -5,6 +5,7 @@ import Card from '@material-ui/core/Card';
 import Paper from '@material-ui/core/Card';
 import PlotData from '../PlotData/PlotData'
 import { observer, inject } from 'mobx-react'
+import {toJS} from 'mobx'
 
 const styles = theme => ({
   root: {
@@ -27,6 +28,8 @@ const styles = theme => ({
 function Visualize(props) {
   const { classes } = props
   const series = props.store.series
+  const { location, push, goBack } = props.routing
+  console.log(toJS(location))
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
