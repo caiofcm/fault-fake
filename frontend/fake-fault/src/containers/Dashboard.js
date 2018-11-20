@@ -20,11 +20,12 @@ import Table from '../components/Table/Table';
 import LoadSeries from '../components/LoadSeries/LoadSeries';
 import CreateSeries from '../components/CreateSeries/CreateSeries';
 // import { Route, Switch } from "react-router-dom"
-import { Route, Switch, withRouter } from "react-router"
+// import { Route, Switch, withRouter } from "react-router"
 import EditFaults from '../components/EditFaults/EditFaults';
 import Visualize from '../components/Visualize/Visualize';
 import Import from '../components/Import/SendToServerExample';
 import { observer, inject } from 'mobx-react'
+import { MobxRouter } from 'mobx-router'
 
 const drawerWidth = 240;
 
@@ -127,14 +128,8 @@ class Dashboard extends React.Component {
     this.setState(state => ({ openNested: !state.openNested }));
   }
 
-  artificialLinkTry = () => {
-    this.props.routing.push('/data')
-    // this.setState(state => ({ fakeState: !state.fakeState }))
-  }
-
   render() {
-    const { classes, data, handleEditBut } = this.props;
-    const { location, push, goBack } = this.props.routing
+    const { classes, data, handleEditBut } = this.props
 
     return (
       <div className={classes.root}>
@@ -184,39 +179,12 @@ class Dashboard extends React.Component {
             </IconButton>
           </div>
           <Divider />
-          <List>{mainListItems(classes, this.handleNestedClick, this.state.openNested, this.props.routing)}</List>
+          <List>{mainListItems(classes, this.handleNestedClick, this.state.openNested, this.props.store.router)}</List>
         </Drawer>
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
 
-          {/* <Route exact path="/" render={props =>
-            <Table data={data}></Table>} />
-          <Route exact path="/data" render={props =>
-            <Table data={data}></Table>} />
-          <Route path={`/data/:id`} render={props =>
-            <EditFaults {...props} data={data} handleEditBut={handleEditBut}></EditFaults>} />
-          <Route path="/create" render={props =>
-            <CreateSeries data={data}></CreateSeries>} />
-          <Route path="/visualize" render={props =>
-            <Visualize data={data}></Visualize>} />
-          <Route path="/import" render={props =>
-            <Import onFileLoad={this.props.onFileLoad}></Import>} /> */}
-
-          {/* <Route exact path="/" component={Table} /> */}
-          {/* <Route exact path="/data" component={Table} /> */}
-          {/* <Route path={`/data/:id`} component={EditFaults} /> */}
-
-          {/* <Route exact path="visualize" component={Visualize} /> */}
-
-          <button onClick={this.artificialLinkTry}>AQUI MOTHER FUCKER</button>
-
-          <Switch>
-            <Route path='/visualize' exact component={Visualize} />
-            {/* <Route path='/' exact component={Table} /> */}
-            <Route path='/data' exact component={Table} />
-            {/* <Route exact path="/data" render={props =>
-              <Table {...props}></Table>} /> */}
-          </Switch>
+          <MobxRouter/>
 
         </main>
       </div>
@@ -229,6 +197,6 @@ Dashboard.propTypes = {
 };
 
 const styled = withStyles(styles)(Dashboard);
-const mobxed = inject("store", "routing")(observer(styled))
-// export default withRouter(mobxed)
+const mobxed = inject("store")(observer(styled))
 export default mobxed
+// export default mobxed

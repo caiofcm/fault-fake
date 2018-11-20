@@ -21,9 +21,10 @@ import Button from '@material-ui/core/Button'
 import AddIcon from '@material-ui/icons/Add'
 import Icon from '@material-ui/core/Icon'
 import EditIcon from '@material-ui/icons/EditOutlined'
-import { Link } from "react-router-dom"
+// import { Link } from "react-router-dom"
 import { lighten } from '@material-ui/core/styles/colorManipulator'
 import { observer, inject } from 'mobx-react'
+import views from '../../config/views'
 
 let counter = 0
 function createData(name, calories, fat, carbs, protein) {
@@ -230,7 +231,7 @@ class EnhancedTable extends React.Component {
     order: 'asc',
     orderBy: 'calories',
     selected: [],
-    data: computeAllData(this.props.store.series), //computeAllData(this.props.data),
+    data: computeAllData(this.props.store.store.series), //computeAllData(this.props.data),
     page: 0,
     rowsPerPage: 5,
   }
@@ -289,6 +290,8 @@ class EnhancedTable extends React.Component {
     const { classes } = this.props
     const { data, order, orderBy, selected, rowsPerPage, page } = this.state
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage)
+    const router = this.props.store.router
+    const store = this.props.store.store
 
     return (
       <Paper className={classes.root}>
@@ -324,7 +327,8 @@ class EnhancedTable extends React.Component {
                       <TableCell component="th" scope="row" padding="none">
                         {n.name}
                       </TableCell>
-                      <TableCell component={Link} to={`/data/${n.id}`} serie={n}>
+                      {/* to={`/data/${n.id}`} serie={n}  router.goTo((views.document, {id:1})) */}
+                      <TableCell onClick={() => router.goTo(views.document, { id: n.id }, store)} >
                         <IconButton aria-label="Edit">
                           <EditIcon />
                         </IconButton>
@@ -361,7 +365,7 @@ class EnhancedTable extends React.Component {
           onChangePage={this.handleChangePage}
           onChangeRowsPerPage={this.handleChangeRowsPerPage}
         />
-        <h3>{this.props.store.author.name}</h3>
+        <h3>{this.props.store.store.author.name}</h3>
       </Paper>
     )
   }
@@ -372,5 +376,5 @@ EnhancedTable.propTypes = {
 }
 
 const styled = withStyles(styles)(EnhancedTable)
-export default inject("store", "routing")(observer(styled))
+export default inject("store")(observer(styled))
 

@@ -61,5 +61,5 @@ class Manager extends Component {
 }
 
 // export default Manager;
-export default inject("store", "routing")(observer(Manager))
+export default inject("store")(observer(Manager))
 

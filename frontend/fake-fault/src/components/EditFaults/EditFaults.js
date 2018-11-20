@@ -5,7 +5,7 @@ import { Paper } from '@material-ui/core';
 import FormEdit from './FormEdit'
 import Button from '@material-ui/core/Button';
 import PlotData from '../PlotData/PlotData'
-import { browserHistory } from 'react-router';
+// import { browserHistory } from 'react-router';
 import { observer, inject } from 'mobx-react'
 
 const styles = theme => ({
@@ -131,9 +131,12 @@ class EditFaults extends Component {
   }
 
   render() {
+    const { store } = this.props;
+    const { router: { params } } = store
     const { classes } = this.props;
-    const id = parseInt(this.props.match.params.id)
-    const serie = this.props.store.series.filter(v => v.id === id)[0]
+    // const id = parseInt(this.props.match.params.id)
+    const id = parseInt(params.id)
+    const serie = this.props.store.store.series.filter(v => v.id === id)[0]
     // const serie = this.props.data.filter(v => v.id === id)[0]
     return (
       <div className={classes.root}>

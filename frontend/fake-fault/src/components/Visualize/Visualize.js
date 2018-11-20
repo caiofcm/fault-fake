@@ -27,9 +27,7 @@ const styles = theme => ({
 
 function Visualize(props) {
   const { classes } = props
-  const series = props.store.series
-  const { location, push, goBack } = props.routing
-  console.log(toJS(location))
+  const series = props.store.store.series
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -48,4 +46,4 @@ function Visualize(props) {
 
 // export default withStyles(styles)(Visualize)
 const styled = withStyles(styles)(Visualize)
-export default inject("store", "routing")(observer(styled))
+export default inject("store")(observer(styled))

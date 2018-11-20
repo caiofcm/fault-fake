@@ -13,21 +13,21 @@ import StarBorder from '@material-ui/icons/StarBorder';
 import Collapse from '@material-ui/core/Collapse';
 import List from '@material-ui/core/List';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
-import { Link } from "react-router-dom"
+// import { Link } from "react-router-dom"
+import views from '../config/views'
 
-
-export const mainListItems = (classes, handleNestedClick, openNested, routing) => {
-  const { location, push, goBack } = routing
+export const mainListItems = (classes, handleNestedClick, openNested, router) => {
   return (
     <div>
       {/* <button onClick={() => push('/data')}></button> */}
-      <ListItem component={Link} to="/data" button>
+
+      <ListItem  button onClick={() => router.goTo(views.home)}>
         <ListItemIcon>
           <DashboardIcon />
         </ListItemIcon>
         <ListItemText primary="Data Series" />
       </ListItem>
-      {/* <ListItem component={Link} to="/create" button>
+      {/* <ListItem  to="/create" button>
       <ListItemIcon>
         <LayersIcon />
       </ListItemIcon> */}
@@ -43,14 +43,14 @@ export const mainListItems = (classes, handleNestedClick, openNested, routing) =
       <Collapse in={openNested} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           <ListItem button className={classes.nested}
-            component={Link} to="/create">
+             to="/create">
             <ListItemIcon>
               <StarBorder />
             </ListItemIcon>
             <ListItemText inset primary="Generate" />
           </ListItem>
           <ListItem button className={classes.nested}
-            component={Link} to="/import">
+             to="/import">
             <ListItemIcon>
               <StarBorder />
             </ListItemIcon>
@@ -58,7 +58,7 @@ export const mainListItems = (classes, handleNestedClick, openNested, routing) =
           </ListItem>
         </List>
       </Collapse>
-      <ListItem component={Link} to="/visualize" button>
+      <ListItem button onClick={() => router.goTo(views.visualize)}>
         <ListItemIcon>
           <AssignmentIcon />
         </ListItemIcon>
