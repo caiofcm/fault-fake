@@ -1,6 +1,8 @@
 // import { observer } from 'mobx-react';
 import { observable, computed, decorate, autorun } from "mobx"
 // import mobx from "mobx"
+import { constantFault } from "../utils/utils";
+import { action } from "mobx"
 
 const LEN = 50
 const randomArray = (length, max) => [...new Array(length)]
@@ -32,6 +34,33 @@ class DataStore {
     return `First serie "${this.series[0].tag}". `
   }
 
+
+  handleEditBut (id, faultConfig, bounds, faultType) {
+    const serie = this.series.filter(v => v.id === id)[0]
+    let signal
+    switch (faultType) {
+      case 'constant':
+        signal = constantFault({ serie, faultConfig, bounds })
+        break;
+
+      default:
+        break;
+    }
+
+    // let data = [...this.state.data]
+    const index = this.series.findIndex(v => v.id === id)
+    // let serieMod = { ...data[index] }
+    // serieMod.values = signal
+    // serieMod.faultAdded = true
+    // data[index] = serieMod
+    // this.setState({ data })
+    this.series[index].values = signal
+  }
+
+  importDataFromFile () {
+
+  }
+
   // addTodo(task) {
   //   this.todos.push({
   //     task: task,
@@ -44,6 +73,7 @@ class DataStore {
 decorate(DataStore, {
   series: observable,
   author: observable,
+  handleEditBut: action,
 })
 
 

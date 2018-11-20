@@ -1,7 +1,8 @@
 import React from 'react'
 import Plot from 'react-plotly.js'
+import { observer, inject } from 'mobx-react'
 
-export default function PlotData(props) {
+function PlotData(props) {
   return (
     <Plot
       onRelayout={props.handleReLayout}
@@ -23,3 +24,5 @@ export default function PlotData(props) {
     />
   )
 }
+
+export default inject(["store"])(observer(PlotData))

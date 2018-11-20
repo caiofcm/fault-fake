@@ -10,7 +10,9 @@ import EditFaults from '../components/EditFaults/EditFaults';
 // import Gallery from 'components/Gallery';
 // import Book from 'components/Book';
 import Visualize from '../components/Visualize/Visualize';
-import DocMobxRout from '../components/DocMobxRout';
+import Import from "../components/Import/Import";
+import SendToServerExample from "../components/Import/SendToServerExample";
+
 
 const views = {
   home: new Route({
@@ -30,12 +32,17 @@ const views = {
       console.log('params changed to', params);
     }
   }),
-  document: new Route({
-    path: '/data/:id',
+  series: new Route({
+    path: '/series/:id',
     component: <EditFaults />,
     onEnter: (route, params) => {
       console.log(`entering EditFaults with params`, params);
     }
-  })
+  }),
+  import: new Route({
+    path: '/import',
+    // component: <Import />,
+    component: <SendToServerExample />,
+  }),
 };
 export default views;

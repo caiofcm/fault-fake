@@ -50,7 +50,7 @@ export const mainListItems = (classes, handleNestedClick, openNested, router) =>
             <ListItemText inset primary="Generate" />
           </ListItem>
           <ListItem button className={classes.nested}
-             to="/import">
+            onClick={() => router.goTo(views.import)}>
             <ListItemIcon>
               <StarBorder />
             </ListItemIcon>

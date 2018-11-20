@@ -54,14 +54,6 @@ class EditFaults extends Component {
     faultType: 'constant',
   }
 
-  // myDiv.on('plotly_relayout',
-  //   function(eventdata) {
-  //   alert('ZOOM!' + '\n\n' +
-  //     'Event data:' + '\n' +
-  //     JSON.stringify(eventdata) + '\n\n' +
-  //     'x-axis start:' + eventdata['xaxis.range[0]'] + '\n' +
-  //     'x-axis end:' + eventdata['xaxis.range[1]']);
-  // })
   handleReLayout = (eventdata) => {
     console.log(eventdata)
     if ('xaxis.autorange' in eventdata && 'yaxis.autorange' in eventdata) {
@@ -77,19 +69,8 @@ class EditFaults extends Component {
         lowBound: valLow,
         uppBound: valUpp,
       })
-      // alert('ZOOM!' + '\n\n' +
-      //   'Event data:' + '\n' +
-      //   JSON.stringify(eventdata) + '\n\n' +
-      //   'x-axis start:' + eventdata['xaxis.range[0]'] + '\n' +
-      //   'x-axis end:' + eventdata['xaxis.range[1]'])
     }
   }
-
-  // conditionalHandleRelayout = (event) => {
-  //   if (this.state.checkedSelection) {
-  //     this.handleReLayout(event)
-  //   }
-  // }
 
   handleCheckedSelection = (event) => {
     this.setState({ checkedSelection: event.target.checked })
@@ -115,7 +96,8 @@ class EditFaults extends Component {
   }
 
   handleBackBut = (event) => {
-    this.props.history.goBack()
+    // this.props.history.goBack()
+    window.history.back()
   }
 
   handleTypeSelection = (event) => {
@@ -123,16 +105,17 @@ class EditFaults extends Component {
     this.setState({ faultType: event.target.value });
   }
 
-  handleEdit = (e, id) => {
-    this.props.handleEditBut(e, id, this.state.faultConfig,
+  handleEdit = (e, id, store) => {
+    store.handleEditBut(id, this.state.faultConfig,
       {lowBound: this.state.lowBound, uppBound: this.state.uppBound },
       this.state.faultType
     )
   }
 
   render() {
-    const { store } = this.props;
-    const { router: { params } } = store
+    const store = this.props.store.store;
+    const router = this.props.store.router;
+    const params = router.params
     const { classes } = this.props;
     // const id = parseInt(this.props.match.params.id)
     const id = parseInt(params.id)
@@ -160,7 +143,7 @@ class EditFaults extends Component {
           <div className={classes.wrapButtons}>
             <Button
               variant="contained" color="primary" className={classes.button}
-              onClick={(e) => this.handleEdit(e, id)}>
+              onClick={(e) => this.handleEdit(e, id, store)}>
               Edit
               </Button>
             <Button

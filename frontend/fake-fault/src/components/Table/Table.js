@@ -328,7 +328,7 @@ class EnhancedTable extends React.Component {
                         {n.name}
                       </TableCell>
                       {/* to={`/data/${n.id}`} serie={n}  router.goTo((views.document, {id:1})) */}
-                      <TableCell onClick={() => router.goTo(views.document, { id: n.id }, store)} >
+                      <TableCell onClick={() => router.goTo(views.series, { id: n.id }, store)} >
                         <IconButton aria-label="Edit">
                           <EditIcon />
                         </IconButton>
