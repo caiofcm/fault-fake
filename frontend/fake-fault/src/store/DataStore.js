@@ -1,7 +1,7 @@
 // import { observer } from 'mobx-react';
 import { observable, computed, decorate, autorun } from "mobx"
 // import mobx from "mobx"
-import { constantFault, processData, computeTableData } from "../utils/utils";
+import { constantFault, processData, computeTableData, getHigherId, createConstantSignal } from "../utils/utils";
 import { action, toJS } from "mobx"
 
 const LEN = 50
@@ -18,7 +18,9 @@ class DataStore {
   series = dataInitial
   appendImportedSeries = false
   faultType = 'constant'
-  faultConfig = {value: 5}
+  faultConfig = {value: 0}
+  numberPointsCreation = 50
+  tagCreation = ''
 
   constructor() {
     autorun(() => console.log('AutoRun called'))
@@ -67,18 +69,21 @@ class DataStore {
   //--------------------
   // Edit Form
   //--------------------
-  handleEditBut = (id, faultConfig, bounds, faultType) => {
-    const serie = this.series.filter(v => v.id === id)[0]
+  handleEditFaultWithBounds = (id, bounds) => {
+    const index = this.series.findIndex(v => v.id === id)
     let signal
-    switch (faultType) {
+    switch (this.faultType) {
       case 'constant':
-        signal = constantFault({ serie, faultConfig, bounds })
+        signal = constantFault({
+          serie: this.series[index],
+          faultConfig: this.faultConfig,
+          bounds
+        })
         break;
 
       default:
         break;
     }
-    const index = this.series.findIndex(v => v.id === id)
     this.series[index].values = signal
     this.series[index].faultAdded = 'Yes'
   }
@@ -93,6 +98,43 @@ class DataStore {
   handleFaultConfig = (faultCfg) => {
     this.faultConfig = faultCfg
   }
+  handleSignalCreation = () => {
+    console.log(this.faultConfig)
+    let signal
+    let num_points = parseInt(this.numberPointsCreation)
+    if (!Number.isInteger(num_points)){
+      num_points = 50
+      this.numberPointsCreation = num_points
+    }
+
+    switch (this.faultType) {
+      case 'constant':
+        signal = createConstantSignal({
+          faultConfig: this.faultConfig,
+          numPoints: num_points
+        })
+        break;
+
+      default:
+        break;
+    }
+    if (this.tagCreation.trim() === '') {
+      this.tagCreation = `tag-${getHigherId(this.series) + 1}`
+    }
+    const serie = {
+      tag: this.tagCreation,
+      values: signal,
+      id: getHigherId(this.series) + 1,
+      faultAdded: false,
+    }
+    this.series.push(serie)
+  }
+  handleNumberPointsCreation = (e) => {
+    this.numberPointsCreation = e.target.value
+  }
+  handleTagCreation = (e) => {
+    this.tagCreation = e.target.value
+  }
 
 }
 
@@ -106,6 +148,10 @@ decorate(DataStore, {
   faultConfig: observable,
   handleFaultTypeSelection: action,
   handleFaultConfig: action,
+  numberPointsCreation: observable,
+  tagCreation: observable,
+  handleNumberPointsCreation: action,
+  handleTagCreation: action,
 })
 
 

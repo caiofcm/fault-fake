@@ -3,11 +3,21 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Input from '@material-ui/core/Input';
-import { Paper } from '@material-ui/core';
+import { Paper, TextField } from '@material-ui/core';
+import SignalCreation from '../SignalCreation/SignalCreation'
+import ConfirmBackButtons from '../Buttons/ConfirmBackButtons'
+import { observer, inject } from 'mobx-react'
+import views from '../../config/views'
 
 const styles = theme => ({
   root: {
     padding: theme.spacing.unit*2,
+  },
+  paper: {
+    flexGrow: 1,
+    padding: theme.spacing.unit * 3,
+    height: '100vh',
+    overflow: 'auto',
   },
   container: {
     display: 'flex',
@@ -16,53 +26,62 @@ const styles = theme => ({
   input: {
     margin: theme.spacing.unit,
   },
+  textField: {
+    flexBasis: 200,
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+  },
 });
 
-function Inputs(props) {
+function handleSignalCreation(e) {
+
+}
+
+function CreateSeries(props) {
   const { classes } = props;
+  // const classes = {}
+  const router = props.store.router
+  const dataStore = props.store.store
   return (
-    <Paper className={classes.root}>
+    <Paper className={classes.paper}>
       <Typography variant="h6" id="createTitle">
         Create a Generalized Binary Noise Signal
-    </Typography>
-      <div className={classes.container}>
-        <Input
-          defaultValue="Hello world"
-          className={classes.input}
-          inputProps={{
-            'aria-label': 'Description',
-          }}
-        />
-        <Input
-          placeholder="Placeholder"
-          className={classes.input}
-          inputProps={{
-            'aria-label': 'Description',
-          }}
-        />
-        <Input
-          value="Disabled"
-          className={classes.input}
-          disabled
-          inputProps={{
-            'aria-label': 'Description',
-          }}
-        />
-        <Input
-          defaultValue="Error"
-          className={classes.input}
-          error
-          inputProps={{
-            'aria-label': 'Description',
-          }}
-        />
-      </div>
+      </Typography>
+      <TextField
+        label="Number of Points"
+        // defaultValue=""
+        className={classes.textField}
+        // helperText="Corresponding t"
+        type="number"
+        value={dataStore.numberPointsCreation}
+        onChange={dataStore.handleNumberPointsCreation}
+        margin="normal"
+        variant="outlined"
+      />
+      <TextField
+        label="Tag"
+        // defaultValue=""
+        className={classes.textField}
+        // helperText="Corresponding t"
+        // type="number"
+        value={dataStore.tagCreation}
+        onChange={dataStore.handleTagCreation}
+        margin="normal"
+        variant="outlined"
+      />
+      <SignalCreation></SignalCreation>
+      <ConfirmBackButtons
+        handleOkButton={dataStore.handleSignalCreation}
+        confirmLabel='Create'
+        handleBackButton={(e) => { router.goTo(views.home)}}
+      />
     </Paper>
   );
 }
 
-Inputs.propTypes = {
+CreateSeries.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Inputs);
+const injectedObserved = inject("store")(observer(CreateSeries))
+export default withStyles(styles)(injectedObserved)

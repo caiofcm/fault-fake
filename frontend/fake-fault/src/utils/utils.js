@@ -16,6 +16,25 @@ function constantFault(inputs) {
 }
 
 //--------------------
+// Signal Creation
+//--------------------
+function createConstantSignal(inputs) {
+  const { faultConfig, numPoints } = inputs
+  const value = faultConfig.value
+  const signal = Array(numPoints)
+  for (let index = 0; index < signal.length; index++) {
+    signal[index] = value;
+  }
+  return signal
+}
+
+
+
+
+
+
+
+//--------------------
 // Series Import
 //--------------------
 function processData(allText) {
@@ -74,6 +93,12 @@ function computeTableData(data) {
 }
 
 
+//--------------------
+// Misc
+//--------------------
+function getHigherId(series) {
+  return Math.max(...series.map(v =>  v.id ))
+}
 
 
 export {
@@ -81,4 +106,6 @@ export {
   processData,
   computeTableData,
   float_format,
+  getHigherId,
+  createConstantSignal,
 }

@@ -7,19 +7,14 @@ const styles = theme => ({
   root: {
     display: 'flex',
     flexWrap: 'wrap',
-    flexDirection: 'column',
-  },
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing.unit * 3,
-    height: '100vh',
-    overflow: 'auto',
+    flexFlow: 'column',
   },
   margin: {
     margin: theme.spacing.unit,
   },
   textField: {
     flexBasis: 200,
+    margin: theme.spacing.unit,
   },
   formControl: {
     margin: theme.spacing.unit,
@@ -41,7 +36,7 @@ class ConstantFault extends React.Component {
     this.dataStore = this.props.store.store
 
     return (
-      <form className={classes.container}>
+      <form className={""}>
         <TextField
           id="outlined-number"
           label="Value"
@@ -49,7 +44,7 @@ class ConstantFault extends React.Component {
           onChange={this.handleFaultConfig}
           type="number"
           className={classes.textField}
-          margin="normal"
+          // margin="normal"
           variant="outlined"
         />
       </form>

@@ -7,6 +7,7 @@ import Button from '@material-ui/core/Button';
 import PlotData from '../PlotData/PlotData'
 // import { browserHistory } from 'react-router';
 import { observer, inject } from 'mobx-react'
+import ConfirmBackButtons from '../Buttons/ConfirmBackButtons';
 
 const styles = theme => ({
   root: {
@@ -106,9 +107,8 @@ class EditFaults extends Component {
   }
 
   handleEdit = (e, id, store) => {
-    store.handleEditBut(id, this.state.faultConfig,
-      {lowBound: this.state.lowBound, uppBound: this.state.uppBound },
-      this.state.faultType
+    store.handleEditFaultWithBounds(id,
+      {lowBound: this.state.lowBound, uppBound: this.state.uppBound }
     )
   }
 
@@ -131,14 +131,14 @@ class EditFaults extends Component {
               handleLowBound={this.handleLowBound}
               uppBound={this.state.uppBound}
               handleUppBound={this.handleUppBound}
-              faultConfig={this.state.faultConfig}
+              // faultConfig={this.state.faultConfig}
               // handleFaultConfig={this.handleFaultConfig}
-              faultType={this.state.faultType}
+              // faultType={this.state.faultType}
               handleTypeSelection={this.handleTypeSelection}
             >
             </FormEdit>
           </div>
-          <div className={classes.wrapButtons}>
+          {/* <div className={classes.wrapButtons}>
             <Button
               variant="contained" color="primary" className={classes.button}
               onClick={(e) => this.handleEdit(e, id, store)}>
@@ -149,7 +149,12 @@ class EditFaults extends Component {
               onClick={this.handleBackBut}>
               Back
             </Button>
-          </div>
+          </div> */}
+          <ConfirmBackButtons
+            handleOkButton={(e) => this.handleEdit(e, id, store)}
+            confirmLabel='Edit'
+            handleBackButton={this.handleBackBut}
+          />
         </Paper>
 
       </div>

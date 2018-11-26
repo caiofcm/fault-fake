@@ -5,7 +5,6 @@ import ConstantFault from './ConstantFault';
 import { observer, inject } from 'mobx-react'
 
 
-
 const styles = theme => ({
   margin: {
     margin: theme.spacing.unit,
