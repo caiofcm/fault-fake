@@ -1,9 +1,10 @@
 import React from 'react'
 import { withStyles } from '@material-ui/core/styles'
 
-import Card from '@material-ui/core/Card'
+// import Card from '@material-ui/core/Card'
 import Button from '@material-ui/core/Button'
 import Paper from '@material-ui/core/Card'
+import { observer, inject } from 'mobx-react'
 
 const styles = theme => ({
   root: {
@@ -25,14 +26,15 @@ const styles = theme => ({
 
 function Visualize(props) {
   const { classes } = props
+  const dataStore = props.store.store
 
   let fileReader
   const handleFileChosen = (e) => {
     const file = e.target.files[0]
-    console.log(e)
-    console.log(file)
+    // console.log(e)
+    // console.log(file)
     fileReader = new FileReader();
-    fileReader.onloadend = props.onFileLoad
+    fileReader.onloadend = dataStore.importSeriesFromFile
     fileReader.readAsText(file)
   }
 
@@ -58,4 +60,5 @@ function Visualize(props) {
   )
 }
 
-export default withStyles(styles)(Visualize)
+const styled = withStyles(styles)(Visualize)
+export default inject("store")(observer(styled))

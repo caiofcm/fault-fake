@@ -1,23 +1,19 @@
 import React, { Component } from 'react';
-import Manager from './containers/Manager'
+import Dashboard from './containers/Dashboard'
+// import loadData from './data-provider/data-provider';
 import { observer, inject } from 'mobx-react'
+// import { constantFault } from './utils/utils'
+
 
 class App extends Component {
+
   render() {
+    // const series = this.props.store.series
     return (
-      // <BrowserRouter>
-        <Manager></Manager>
-        // <h3>Oi</h3>
-      // </BrowserRouter>
-      // <Provider {...stores}>
-      //   <BrowserRouter history={history}>
-      //     {/* <Table ></Table> */}
-      //     <Manager></Manager>
-      //   </BrowserRouter >
-      // </Provider>
+      <Dashboard
+      ></Dashboard>
     )
   }
 }
 
-// export default App;
 export default inject("store")(observer(App))

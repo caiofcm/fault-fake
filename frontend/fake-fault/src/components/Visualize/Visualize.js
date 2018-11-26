@@ -5,7 +5,7 @@ import Card from '@material-ui/core/Card';
 import Paper from '@material-ui/core/Card';
 import PlotData from '../PlotData/PlotData'
 import { observer, inject } from 'mobx-react'
-import {toJS} from 'mobx'
+// import {toJS} from 'mobx'
 
 const styles = theme => ({
   root: {

@@ -15,15 +15,15 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import { mainListItems } from './listitems';
-import SimpleLineChart from '../components/SimpleLineChart/SimpleLineChart';
-import Table from '../components/Table/Table';
-import LoadSeries from '../components/LoadSeries/LoadSeries';
-import CreateSeries from '../components/CreateSeries/CreateSeries';
+// import SimpleLineChart from '../components/SimpleLineChart/SimpleLineChart';
+// import Table from '../components/Table/Table';
+// import LoadSeries from '../components/LoadSeries/LoadSeries';
+// import CreateSeries from '../components/CreateSeries/CreateSeries';
 // import { Route, Switch } from "react-router-dom"
 // import { Route, Switch, withRouter } from "react-router"
-import EditFaults from '../components/EditFaults/EditFaults';
-import Visualize from '../components/Visualize/Visualize';
-import Import from '../components/Import/SendToServerExample';
+// import EditFaults from '../components/EditFaults/EditFaults';
+// import Visualize from '../components/Visualize/Visualize';
+// import Import from '../components/Import/SendToServerExample';
 import { observer, inject } from 'mobx-react'
 import { MobxRouter } from 'mobx-router'
 
@@ -129,7 +129,7 @@ class Dashboard extends React.Component {
   }
 
   render() {
-    const { classes, data, handleEditBut } = this.props
+    const { classes } = this.props
 
     return (
       <div className={classes.root}>

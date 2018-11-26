@@ -1,7 +1,7 @@
 // import { observer } from 'mobx-react';
 import { observable, computed, decorate, autorun } from "mobx"
 // import mobx from "mobx"
-import { constantFault } from "../utils/utils";
+import { constantFault, processData, computeTableData } from "../utils/utils";
 import { action } from "mobx"
 
 const LEN = 50
@@ -22,20 +22,34 @@ class DataStore {
     autorun(() => console.log('AutoRun called'))
   }
 
-  // @computed get completedTodosCount() {
-  //   return this.todos.filter(
-  //     todo => todo.completed === true
-  //   ).length;
-  // }
-
-  get report() {
-    if (this.todos.length === 0)
-      return "<none>";
-    return `First serie "${this.series[0].tag}". `
+  //--------------------
+  // Import Data
+  //--------------------
+  importSeriesFromFile = (e) => {
+    const content = e.currentTarget.result
+    const dataLoaded = processData(content)
+    this.series = dataLoaded
   }
 
+  //--------------------
+  // Table
+  //--------------------
+  get formattedTableData() {
+    return this.series.map((v) => computeTableData(v))
+  }
+  handleDeleteTableClick = (selected) => {
+    selected.forEach(el => {
+      const idx_rm = this.series.findIndex(v => v.id === el)
+      this.series.splice(idx_rm, 1)
+    })
+    console.log(selected)
+    // selected should be a observable
+  }
 
-  handleEditBut (id, faultConfig, bounds, faultType) {
+  //--------------------
+  // Edit Form
+  //--------------------
+  handleEditBut = (id, faultConfig, bounds, faultType) => {
     const serie = this.series.filter(v => v.id === id)[0]
     let signal
     switch (faultType) {
@@ -46,34 +60,19 @@ class DataStore {
       default:
         break;
     }
-
-    // let data = [...this.state.data]
     const index = this.series.findIndex(v => v.id === id)
-    // let serieMod = { ...data[index] }
-    // serieMod.values = signal
-    // serieMod.faultAdded = true
-    // data[index] = serieMod
-    // this.setState({ data })
     this.series[index].values = signal
+    this.series[index].faultAdded = 'Yes'
   }
 
-  importDataFromFile () {
-
-  }
-
-  // addTodo(task) {
-  //   this.todos.push({
-  //     task: task,
-  //     completed: false,
-  //     assignee: null
-  //   })
-  // }
 }
 
 decorate(DataStore, {
   series: observable,
   author: observable,
   handleEditBut: action,
+  importDataFromFile: action,
+  formattedTableData: computed,
 })
 
 

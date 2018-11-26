@@ -7,10 +7,10 @@ import * as serviceWorker from './serviceWorker';
 // import createBrowserHistory from 'history/createBrowserHistory'
 // import { RouterStore, syncHistoryWithStore } from 'mobx-react-router'
 import dataStore from './store/DataStore'
-import { Provider, observer } from 'mobx-react'
-import { MobxRouter, RouterStore, startRouter } from 'mobx-router'
+import { Provider } from 'mobx-react'
+import { RouterStore, startRouter } from 'mobx-router'
 import views from './config/views'
-import { configure } from "mobx"
+// import { configure } from "mobx"
 
 // issue with router? Check how to configure for particular store
 // configure({ enforceActions: 'observed' })

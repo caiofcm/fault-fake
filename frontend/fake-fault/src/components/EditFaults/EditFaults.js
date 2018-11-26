@@ -116,11 +116,9 @@ class EditFaults extends Component {
     const store = this.props.store.store;
     const router = this.props.store.router;
     const params = router.params
-    const { classes } = this.props;
-    // const id = parseInt(this.props.match.params.id)
     const id = parseInt(params.id)
     const serie = this.props.store.store.series.filter(v => v.id === id)[0]
-    // const serie = this.props.data.filter(v => v.id === id)[0]
+    const { classes } = this.props;
     return (
       <div className={classes.root}>
         <Paper className={classes.paper}>
@@ -153,30 +151,11 @@ class EditFaults extends Component {
             </Button>
           </div>
         </Paper>
-        {/* </div> */}
-
-
 
       </div>
     );
   }
 }
 
-// export default withStyles(styles)(EditFaults)
 const styled = withStyles(styles)(EditFaults)
 export default inject(["store"])(observer(styled))
-
-// function EditFaultsF(props) {
-//   console.log(props);
-//   const id = parseInt(props.match.params.id)
-//   const serie = props.data.filter(v => v.id === id)[0]
-
-//   return (
-//     <div>
-//       <h3>Foi! {id}</h3>
-//       <p>
-//         {serie.tag}
-//       </p>
-//     </div>
-//   )
-// }

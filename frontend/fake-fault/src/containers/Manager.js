@@ -24,6 +24,7 @@ class Manager extends Component {
 
 
   onFileLoad = (e) => {
+    console.log('was colladed')
     const content = e.currentTarget.result
     console.log(content)
   }
