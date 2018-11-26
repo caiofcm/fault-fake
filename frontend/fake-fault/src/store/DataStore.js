@@ -2,7 +2,7 @@
 import { observable, computed, decorate, autorun } from "mobx"
 // import mobx from "mobx"
 import { constantFault, processData, computeTableData } from "../utils/utils";
-import { action } from "mobx"
+import { action, toJS } from "mobx"
 
 const LEN = 50
 const randomArray = (length, max) => [...new Array(length)]
@@ -16,7 +16,9 @@ const dataInitial = [
 
 class DataStore {
   series = dataInitial
-  author = { name: 'Caio' }
+  appendImportedSeries = false
+  faultType = 'constant'
+  faultConfig = {value: 5}
 
   constructor() {
     autorun(() => console.log('AutoRun called'))
@@ -26,9 +28,25 @@ class DataStore {
   // Import Data
   //--------------------
   importSeriesFromFile = (e) => {
+    console.log(e)
     const content = e.currentTarget.result
     const dataLoaded = processData(content)
-    this.series = dataLoaded
+    if (this.appendImportedSeries) {
+      const last_id = this.series[this.series.length - 1].id
+      const dataMod = dataLoaded.map((v, idx) => {
+          let mod_v = v
+          mod_v.id = last_id + idx + 1
+          return mod_v
+      })
+      this.series = this.series.concat(dataMod)
+    }
+    else {
+      this.series = dataLoaded
+    }
+  }
+
+  handleAppendImportedSeries = (e) => {
+    this.appendImportedSeries = e.target.checked
   }
 
   //--------------------
@@ -65,6 +83,17 @@ class DataStore {
     this.series[index].faultAdded = 'Yes'
   }
 
+  //--------------------
+  // Fault Creation
+  //--------------------
+  handleFaultTypeSelection = (event) => {
+    console.log(event);
+    this.faultType = event.target.value
+  }
+  handleFaultConfig = (faultCfg) => {
+    this.faultConfig = faultCfg
+  }
+
 }
 
 decorate(DataStore, {
@@ -73,6 +102,10 @@ decorate(DataStore, {
   handleEditBut: action,
   importDataFromFile: action,
   formattedTableData: computed,
+  faultType: observable,
+  faultConfig: observable,
+  handleFaultTypeSelection: action,
+  handleFaultConfig: action,
 })
 
 

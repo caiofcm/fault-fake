@@ -12,7 +12,9 @@ import OutlinedInput from '@material-ui/core/OutlinedInput';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
-import ConstantFault from './ConstantFault';
+// import ConstantFault from '../CreateSeries/ConstantFault';
+import SignalCreation from '../SignalCreation/SignalCreation';
+import { observer, inject } from 'mobx-react'
 
 const styles = theme => ({
   root: {
@@ -50,34 +52,6 @@ const faultTypesSelections = [
 
 class FormEdit extends Component {
   // const classes = props.classes
-
-  state = {
-    labelWidth: 0,
-    // faultType: 'constant',
-  };
-
-  componentDidMount() {
-    this.setState({
-      labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth,
-    });
-  }
-
-  componentDidUpdate() {
-
-  }
-
-  addFormAfterTypeSelection = () => {
-    switch (this.props.faultType) {
-      case 'constant':
-        return (
-        <ConstantFault
-          faultConfig={this.props.faultConfig}
-          handleFaultConfig={this.props.handleFaultConfig}>
-        </ConstantFault>)
-      default:
-        break;
-    }
-  }
 
   // handleTypeSelection = (event) => {
   //   console.log(event);
@@ -126,7 +100,8 @@ class FormEdit extends Component {
             variant="outlined"
           />
         </div>
-        <FormControl variant="outlined" className={classes.formControl}>
+        <SignalCreation />
+        {/* <FormControl variant="outlined" className={classes.formControl}>
           <InputLabel
             ref={ref => {
               this.InputLabelRef = ref;
@@ -156,10 +131,14 @@ class FormEdit extends Component {
             })}
           </Select>
         </FormControl>
-        {this.addFormAfterTypeSelection()}
+        {this.addFormAfterTypeSelection()} */}
       </div>
     )
   }
 }
 
-export default withStyles(styles)(FormEdit)
+export default inject("store")(
+  observer(
+    withStyles(styles)(FormEdit)
+  )
+)

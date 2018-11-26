@@ -11,6 +11,7 @@ import EditFaults from '../components/EditFaults/EditFaults';
 // import Book from 'components/Book';
 import Visualize from '../components/Visualize/Visualize';
 import Import from "../components/Import/Import";
+import CreateSeries from "../components/CreateSeries/CreateSeries";
 // import TesteUpload from "../components/Import/TesteUpload";
 // import SendToServerExample from "../components/Import/SendToServerExample";
 
@@ -43,7 +44,10 @@ const views = {
   import: new Route({
     path: '/import',
     component: <Import />,
-    // component: <SendToServerExample />,
+  }),
+  create: new Route({
+    path: '/create',
+    component: <CreateSeries />,
   }),
 };
 export default views;

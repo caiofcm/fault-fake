@@ -4,7 +4,10 @@ import { withStyles } from '@material-ui/core/styles'
 // import Card from '@material-ui/core/Card'
 import Button from '@material-ui/core/Button'
 import Paper from '@material-ui/core/Card'
+import FileUploadIcon from '@material-ui/icons/InputRounded'
 import { observer, inject } from 'mobx-react'
+import { FormGroup, FormControlLabel, Switch, TextField } from '@material-ui/core';
+import Icon from '@material-ui/core/Icon'
 
 const styles = theme => ({
   root: {
@@ -18,47 +21,105 @@ const styles = theme => ({
     height: '90vh',
     overflow: 'auto',
   },
+  form: {
+    display: 'flex',
+    width: '100%',
+    flexFlow: 'column',
+    // justifyContent: 'flex-start',
+  },
   card: {
     flexBasis: 800,
     margin: theme.spacing.unit * 2,
+  },
+  labelUpload: {
+    marginLeft: 15,
+  },
+  submitBut: {
+    alignSelf: 'center'
+    // marginTop: 30,
+    // textAlign: 'center',
   }
 })
 
-function Visualize(props) {
-  const { classes } = props
-  const dataStore = props.store.store
+class Import extends React.Component {
 
-  let fileReader
-  const handleFileChosen = (e) => {
-    const file = e.target.files[0]
-    // console.log(e)
-    // console.log(file)
-    fileReader = new FileReader();
-    fileReader.onloadend = dataStore.importSeriesFromFile
-    fileReader.readAsText(file)
+  state = {
+    fileName: 'File not chosen',
   }
 
-  return (
-    <div className={classes.root}>
-      <Paper className={classes.paper}>
-        <input type='file'
-          id='file'
-          className='input-file'
-          accept='.csv'
-          hidden
-          onChange={handleFileChosen}
-        />
-        <label htmlFor="file">
-          <Button variant="contained" color="primary" component="span" className={classes.button}
-            >
-            Upload CSV
-          </Button>
-        </label>
+  handleFileChosen = (e) => {
+    // const dataStore = this.props.store.store
+    const file = e.target.files[0]
+    this.fileAtt = file
+    // console.log(e)
+    // console.log(file)
+    this.setState({ fileName: file.name })
+  }
 
-      </Paper>
-    </div>
-  )
+  handleSubmit = (e) => {
+    e.preventDefault()
+    const dataStore = this.props.store.store
+    console.log('aow', e)
+    console.log('aow', this.fileAtt)
+    const fileReader = new FileReader();
+    fileReader.onloadend = dataStore.importSeriesFromFile
+    fileReader.readAsText(this.fileAtt)
+  }
+
+
+  render() {
+    const { classes } = this.props
+    const dataStore = this.props.store.store
+
+    return (
+      <div className={classes.root}>
+        <Paper className={classes.paper}>
+          <form onSubmit={this.handleSubmit} id="myform" className={classes.form}>
+            <div className="">
+              <input type='file'
+                id='file'
+                className='input-file'
+                accept='.csv'
+                hidden
+                onChange={this.handleFileChosen}
+              />
+              <label htmlFor="file">
+                <Button variant="contained" component="span" className={classes.button}
+                >
+                  Choose File
+             </Button>
+              </label>
+              <span className={classes.labelUpload}>{this.state.fileName}</span>
+            </div>
+            <FormControlLabel
+              control={
+                <Switch
+                  // checked={dataStore.appendImportedSeries}
+                  onChange={dataStore.handleAppendImportedSeries}
+                  value="appendImportedSeriesVal"
+                  color="primary"
+                />
+              }
+              label="Append to Series"
+            />
+
+            <div className={classes.submitBut}>
+              <Button variant="contained"
+                color="primary"
+                className={classes.button}
+                type="submit"
+                form="myform"
+              >
+                Submit
+               </Button>
+            </div>
+          </form>
+        </Paper>
+      </div>
+    )
+  }
+
 }
 
-const styled = withStyles(styles)(Visualize)
+const styled = withStyles(styles)(Import)
 export default inject("store")(observer(styled))

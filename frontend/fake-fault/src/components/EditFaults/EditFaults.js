@@ -88,12 +88,12 @@ class EditFaults extends Component {
     })
   }
 
-  handleFaultConfig = (event) => {
-    const faultConfig = { ...this.state.faultConfig }
-    faultConfig.value = event.target.value
-    console.log(this.state.faultConfig.value)
-    this.setState({ faultConfig })
-  }
+  // handleFaultConfig = (event) => {
+  //   const faultConfig = { ...this.state.faultConfig }
+  //   faultConfig.value = event.target.value
+  //   console.log(this.state.faultConfig.value)
+  //   this.setState({ faultConfig })
+  // }
 
   handleBackBut = (event) => {
     // this.props.history.goBack()
@@ -132,7 +132,7 @@ class EditFaults extends Component {
               uppBound={this.state.uppBound}
               handleUppBound={this.handleUppBound}
               faultConfig={this.state.faultConfig}
-              handleFaultConfig={this.handleFaultConfig}
+              // handleFaultConfig={this.handleFaultConfig}
               faultType={this.state.faultType}
               handleTypeSelection={this.handleTypeSelection}
             >

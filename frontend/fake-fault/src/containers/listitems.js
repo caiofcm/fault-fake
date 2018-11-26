@@ -43,7 +43,7 @@ export const mainListItems = (classes, handleNestedClick, openNested, router) =>
       <Collapse in={openNested} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           <ListItem button className={classes.nested}
-             to="/create">
+            onClick={() => router.goTo(views.create)}>
             <ListItemIcon>
               <StarBorder />
             </ListItemIcon>
