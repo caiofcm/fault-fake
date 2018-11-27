@@ -100,6 +100,18 @@ function getHigherId(series) {
   return Math.max(...series.map(v =>  v.id ))
 }
 
+// Standard Normal variate using Box-Muller transform.
+function randn_bm() {
+  var u = 0, v = 0;
+  while (u === 0) u = Math.random(); //Converting [0,1) to (0,1)
+  while (v === 0) v = Math.random();
+  return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+}
+
+const UUIDgeneration = function () {
+  // http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) { var r = Math.random() * 16 | 0, v = c == 'x' ? r : r & 0x3 | 0x8; return v.toString(16); });
+};
 
 export {
   constantFault,
@@ -108,4 +120,6 @@ export {
   float_format,
   getHigherId,
   createConstantSignal,
+  randn_bm,
+  UUIDgeneration,
 }

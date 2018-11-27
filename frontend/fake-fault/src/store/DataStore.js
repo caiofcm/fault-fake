@@ -1,8 +1,9 @@
 // import { observer } from 'mobx-react';
 import { observable, computed, decorate, autorun } from "mobx"
 // import mobx from "mobx"
-import { constantFault, processData, computeTableData, getHigherId, createConstantSignal } from "../utils/utils";
+import { constantFault, processData, computeTableData, getHigherId, createConstantSignal, randn_bm, UUIDgeneration } from "../utils/utils";
 import { action, toJS } from "mobx"
+import axios from 'axios';
 
 const LEN = 50
 const randomArray = (length, max) => [...new Array(length)]
@@ -18,9 +19,11 @@ class DataStore {
   series = dataInitial
   appendImportedSeries = false
   faultType = 'constant'
-  faultConfig = {value: 0}
+  faultConfig = { value: 0 }
   numberPointsCreation = 50
   tagCreation = ''
+  noiseStd = 0
+
 
   constructor() {
     autorun(() => console.log('AutoRun called'))
@@ -36,9 +39,9 @@ class DataStore {
     if (this.appendImportedSeries) {
       const last_id = this.series[this.series.length - 1].id
       const dataMod = dataLoaded.map((v, idx) => {
-          let mod_v = v
-          mod_v.id = last_id + idx + 1
-          return mod_v
+        let mod_v = v
+        mod_v.id = last_id + idx + 1
+        return mod_v
       })
       this.series = this.series.concat(dataMod)
     }
@@ -102,7 +105,7 @@ class DataStore {
     console.log(this.faultConfig)
     let signal
     let num_points = parseInt(this.numberPointsCreation)
-    if (!Number.isInteger(num_points)){
+    if (!Number.isInteger(num_points)) {
       num_points = 50
       this.numberPointsCreation = num_points
     }
@@ -118,6 +121,15 @@ class DataStore {
       default:
         break;
     }
+
+    const noiseStd_ = parseFloat(this.noiseStd)
+    if (noiseStd_ > 0) {
+      signal.forEach((o, i, a) =>
+        a[i] = a[i] + noiseStd_ * randn_bm()
+      )
+    }
+
+
     if (this.tagCreation.trim() === '') {
       this.tagCreation = `tag-${getHigherId(this.series) + 1}`
     }
@@ -135,6 +147,53 @@ class DataStore {
   handleTagCreation = (e) => {
     this.tagCreation = e.target.value
   }
+  handleNoiseAddition = (e) => {
+    this.noiseStd = e.target.value
+  }
+
+
+
+
+  //--------------------
+  // Communication with Python
+  //--------------------
+  apiRPCComm = (method, params, resolve_cb, error_cb) => {
+    const url = 'http://localhost:5000/api'
+    const paramsTest = {
+      tspan: [1, 3, 4, 5, 6],
+      low: [-1],
+      upp: [1],
+      prob: [0.95],
+      min_const: [0],
+    }
+    axios.post(url, {
+      jsonrpc: "2.0",
+      method: method,
+      params: params,
+      id: UUIDgeneration(),
+    })
+      .then(function (response) {
+        resolve_cb(response.data)
+      })
+      .catch(function (error) {
+        error_cb(error)
+      })
+  }
+  handleGBNCreation = () => {
+    const paramsTest = {
+      tspan: [1, 3, 4, 5, 6],
+      low: [-1],
+      upp: [1],
+      prob: [0.95],
+      min_const: [0],
+    }
+    this.apiRPCComm('Signal.gbn', paramsTest, console.log, console.log,)
+  }
+  cbSignalCreated = (signal) => {
+
+  }
+
+
 
 }
 
@@ -152,8 +211,12 @@ decorate(DataStore, {
   tagCreation: observable,
   handleNumberPointsCreation: action,
   handleTagCreation: action,
+  noiseStd: observable,
+  handleNoiseAddition: action,
 })
 
 
 const observableDataStore = new DataStore();
 export default observableDataStore
+
+window.dataStore = observableDataStore

@@ -26,7 +26,7 @@ class ConstantFault extends React.Component {
 
   handleFaultConfig = (e) => {
     const valConstant = e.target.value
-    const faultConfig = { value: valConstant }
+    const faultConfig = { value: parseFloat(valConstant) }
     this.dataStore.handleFaultConfig(faultConfig)
   }
 

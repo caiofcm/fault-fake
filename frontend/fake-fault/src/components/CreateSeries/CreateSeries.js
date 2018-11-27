@@ -6,6 +6,7 @@ import Input from '@material-ui/core/Input';
 import { Paper, TextField } from '@material-ui/core';
 import SignalCreation from '../SignalCreation/SignalCreation'
 import ConfirmBackButtons from '../Buttons/ConfirmBackButtons'
+import NoiseForm from '../SignalCreation/NoiseForm'
 import { observer, inject } from 'mobx-react'
 import views from '../../config/views'
 
@@ -45,7 +46,7 @@ function CreateSeries(props) {
   return (
     <Paper className={classes.paper}>
       <Typography variant="h6" id="createTitle">
-        Create a Generalized Binary Noise Signal
+        Create a new Signal
       </Typography>
       <TextField
         label="Number of Points"
@@ -70,6 +71,7 @@ function CreateSeries(props) {
         variant="outlined"
       />
       <SignalCreation></SignalCreation>
+      <NoiseForm></NoiseForm>
       <ConfirmBackButtons
         handleOkButton={dataStore.handleSignalCreation}
         confirmLabel='Create'
