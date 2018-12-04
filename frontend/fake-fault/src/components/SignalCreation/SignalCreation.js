@@ -1,7 +1,8 @@
-import React, { Component } from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom';
-import { FormControl, InputLabel, Select, OutlinedInput, MenuItem, withStyles } from '@material-ui/core';
+import { FormControl, InputLabel, Select, OutlinedInput, MenuItem, withStyles, TextField } from '@material-ui/core';
 import ConstantFault from './ConstantFault';
+import RandomGBN from './RandomGBN';
 import { observer, inject } from 'mobx-react'
 
 
@@ -30,11 +31,16 @@ const faultTypesSelections = [
 ]
 
 
-class SignalCreation extends Component {
+class SignalCreation extends React.Component {
 
   state = {
     labelWidth: 0,
+    age: '',
     // faultType: 'constant',
+  };
+
+  handleChange = event => {
+    this.setState({ age: event.target.value });
   };
 
   componentDidMount() {
@@ -51,12 +57,17 @@ class SignalCreation extends Component {
   // }
 
   addFormAfterTypeSelection = () => {
-    switch (this.dataStore.faultType) {
+    switch (this.dataStore.faultType.toLowerCase()) {
       case 'constant':
         return (
           <ConstantFault
             >
           </ConstantFault>)
+      case 'random':
+        return (
+          <RandomGBN
+          >
+          </RandomGBN>)
       default:
         break;
     }
@@ -105,5 +116,5 @@ class SignalCreation extends Component {
 }
 
 
-const styled = withStyles(styles)(SignalCreation)
-export default inject("store")(observer(styled))
+const injectedObserved = inject("store")(observer(SignalCreation))
+export default withStyles(styles)(injectedObserved)

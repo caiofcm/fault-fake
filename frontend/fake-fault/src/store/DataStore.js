@@ -18,7 +18,7 @@ const dataInitial = [
 class DataStore {
   series = dataInitial
   appendImportedSeries = false
-  faultType = 'constant'
+  faultType = ''
   faultConfig = { value: 0 }
   numberPointsCreation = 50
   tagCreation = ''
@@ -97,6 +97,7 @@ class DataStore {
   handleFaultTypeSelection = (event) => {
     console.log(event);
     this.faultType = event.target.value
+    console.log(this.faultType)
   }
   handleFaultConfig = (faultCfg) => {
     this.faultConfig = faultCfg
@@ -117,9 +118,11 @@ class DataStore {
           numPoints: num_points
         })
         break;
-
+      case 'gbn':
+        signal = this.handleGBNCreation()
+        break
       default:
-        break;
+        break
     }
 
     const noiseStd_ = parseFloat(this.noiseStd)
@@ -159,13 +162,6 @@ class DataStore {
   //--------------------
   apiRPCComm = (method, params, resolve_cb, error_cb) => {
     const url = 'http://localhost:5000/api'
-    const paramsTest = {
-      tspan: [1, 3, 4, 5, 6],
-      low: [-1],
-      upp: [1],
-      prob: [0.95],
-      min_const: [0],
-    }
     axios.post(url, {
       jsonrpc: "2.0",
       method: method,
@@ -187,7 +183,7 @@ class DataStore {
       prob: [0.95],
       min_const: [0],
     }
-    this.apiRPCComm('Signal.gbn', paramsTest, console.log, console.log,)
+    this.apiRPCComm('Signal.gbn', paramsTest, this.cbSignalCreated, console.log)
   }
   cbSignalCreated = (signal) => {
 
