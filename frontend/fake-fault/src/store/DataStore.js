@@ -29,6 +29,10 @@ decorate(GBNStore, {
   min_constant: observable,
 })
 
+// The idea was to add a small Store for each type of fault, such that its state can be represented accordingly
+// Thus, todo is to create a list of store, check if this is ok... they would be the possible ones
+// Also faultConfig would refer to it...
+
 class DataStore {
   series = dataInitial
   appendImportedSeries = false
