@@ -25,8 +25,15 @@ const styles = theme => ({
 class RandomGBN extends React.Component {
 
   handleFaultConfig = (e) => {
-    const valConstant = e.target.value
-    const faultConfig = { value: parseFloat(valConstant) }
+    let val
+    if (e.target.name === 'min_constant'){
+      val = parseInt(e.target.value)
+    }
+    else {
+      val = parseFloat(e.target.value)
+    }
+    let faultConfig = {...this.dataStore.faultConfig}
+    faultConfig[e.target.name] = val
     this.dataStore.handleFaultConfig(faultConfig)
   }
 
@@ -45,6 +52,7 @@ class RandomGBN extends React.Component {
           className={classes.textField}
           // margin="normal"
           variant="outlined"
+          name="low_value"
         />
         <TextField
           label="Upper Value"
@@ -54,6 +62,7 @@ class RandomGBN extends React.Component {
           className={classes.textField}
           // margin="normal"
           variant="outlined"
+          name="upp_value"
         />
         <TextField
           label="Probability change"
@@ -63,6 +72,7 @@ class RandomGBN extends React.Component {
           className={classes.textField}
           // margin="normal"
           variant="outlined"
+          name="prob_change"
         />
         <TextField
           label="Min. constant"
@@ -72,6 +82,7 @@ class RandomGBN extends React.Component {
           className={classes.textField}
           // margin="normal"
           variant="outlined"
+          name="min_constant"
         />
       </form>
     )

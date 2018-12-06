@@ -24,7 +24,7 @@ const styles = theme => ({
 
 const faultTypesSelections = [
   { value: 'constant', label: 'Constant' },
-  { value: 'random', label: 'Random' },
+  { value: 'gbn', label: 'GBN' },
   { value: 'arima', label: 'ARIMA' },
   { value: 'ramp', label: 'Ramp' },
   { value: 'senoidal', label: 'Senoidal' },
@@ -63,7 +63,7 @@ class SignalCreation extends React.Component {
           <ConstantFault
             >
           </ConstantFault>)
-      case 'random':
+      case 'gbn':
         return (
           <RandomGBN
           >

@@ -15,6 +15,20 @@ const dataInitial = [
   { tag: 'tag3', values: randomArray(LEN, 1.0), id: 3, faultAdded: false },
 ]
 
+class GBNStore {
+  low_value = -1
+  upp_value = 10
+  prob_change = 0.95
+  min_constant = 5
+}
+
+decorate(GBNStore, {
+  low_value: observable,
+  upp_value: observable,
+  prob_change: observable,
+  min_constant: observable,
+})
+
 class DataStore {
   series = dataInitial
   appendImportedSeries = false
