@@ -33,8 +33,9 @@ class RandomGBN extends React.Component {
       val = parseFloat(e.target.value)
     }
     let faultConfig = {...this.dataStore.faultConfig}
+    // this.dataStore.faultStores.gbn
     faultConfig[e.target.name] = val
-    this.dataStore.handleFaultConfig(faultConfig)
+    // this.dataStore.handleFaultConfig(faultConfig)
   }
 
 
@@ -46,8 +47,8 @@ class RandomGBN extends React.Component {
       <form className={""}>
         <TextField
           label="Lower Value"
-          value={this.dataStore.faultConfig.low_value}
-          onChange={this.handleFaultConfig}
+          value={this.dataStore.faultStores.gbn.low_value}
+          onChange={this.dataStore.faultStores.gbn.handleModifyValue}
           type="number"
           className={classes.textField}
           // margin="normal"
@@ -56,8 +57,8 @@ class RandomGBN extends React.Component {
         />
         <TextField
           label="Upper Value"
-          value={this.dataStore.faultConfig.upp_value}
-          onChange={this.handleFaultConfig}
+          value={this.dataStore.faultStores.gbn.upp_value}
+          onChange={this.dataStore.faultStores.gbn.handleModifyValue}
           type="number"
           className={classes.textField}
           // margin="normal"
@@ -66,8 +67,8 @@ class RandomGBN extends React.Component {
         />
         <TextField
           label="Probability change"
-          value={this.dataStore.faultConfig.prob_change}
-          onChange={this.handleFaultConfig}
+          value={this.dataStore.faultStores.gbn.prob_change}
+          onChange={this.dataStore.faultStores.gbn.handleModifyValue}
           type="number"
           className={classes.textField}
           // margin="normal"
@@ -76,8 +77,8 @@ class RandomGBN extends React.Component {
         />
         <TextField
           label="Min. constant"
-          value={this.dataStore.faultConfig.min_constant}
-          onChange={this.handleFaultConfig}
+          value={this.dataStore.faultStores.gbn.min_constant}
+          onChange={this.dataStore.faultStores.gbn.handleModifyValue}
           type="number"
           className={classes.textField}
           // margin="normal"

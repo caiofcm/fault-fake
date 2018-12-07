@@ -20,6 +20,18 @@ class GBNStore {
   upp_value = 10
   prob_change = 0.95
   min_constant = 5
+
+  handleModifyValue = (e) => {
+    let val
+    if (e.target.name === 'min_constant') {
+      val = parseInt(e.target.value)
+    }
+    else {
+      val = parseFloat(e.target.value)
+    }
+    this[e.target.name] = val
+  }
+
 }
 
 decorate(GBNStore, {
@@ -27,6 +39,7 @@ decorate(GBNStore, {
   upp_value: observable,
   prob_change: observable,
   min_constant: observable,
+  handleModifyValue: action,
 })
 
 // The idea was to add a small Store for each type of fault, such that its state can be represented accordingly
@@ -41,6 +54,8 @@ class DataStore {
   numberPointsCreation = 50
   tagCreation = ''
   noiseStd = 0
+  currFaultConfig = {}
+  faultStores = { gbn: new GBNStore() }
 
 
   constructor() {
@@ -123,18 +138,18 @@ class DataStore {
   handleSignalCreation = () => {
     console.log(this.faultConfig)
     let signal
-    let num_points = parseInt(this.numberPointsCreation)
-    if (!Number.isInteger(num_points)) {
-      num_points = 50
-      this.numberPointsCreation = num_points
-    }
+
+    this.validateNumberOfPoints()
 
     switch (this.faultType) {
       case 'constant':
         signal = createConstantSignal({
           faultConfig: this.faultConfig,
-          numPoints: num_points
+          numPoints: this.numberPointsCreation
         })
+        this.addNoise(signal)
+        const serie = this.createNewSerieObject(signal)
+        this.series.push(serie)
         break;
       case 'gbn':
         signal = this.handleGBNCreation()
@@ -143,14 +158,45 @@ class DataStore {
         break
     }
 
+
+
+    // const noiseStd_ = parseFloat(this.noiseStd)
+    // if (noiseStd_ > 0) {
+    //   signal.forEach((o, i, a) =>
+    //     a[i] = a[i] + noiseStd_ * randn_bm()
+    //   )
+    // }
+
+
+    // if (this.tagCreation.trim() === '') {
+    //   this.tagCreation = `tag-${getHigherId(this.series) + 1}`
+    // }
+    // const serie = {
+    //   tag: this.tagCreation,
+    //   values: signal,
+    //   id: getHigherId(this.series) + 1,
+    //   faultAdded: false,
+    // }
+    // this.series.push(serie)
+  }
+
+  validateNumberOfPoints = () => {
+    this.numberPointsCreation = parseInt(this.numberPointsCreation)
+    if (!Number.isInteger(this.numberPointsCreation)) {
+      this.numberPointsCreation = 50
+    }
+  }
+
+  addNoise = (signal) => {
     const noiseStd_ = parseFloat(this.noiseStd)
     if (noiseStd_ > 0) {
       signal.forEach((o, i, a) =>
         a[i] = a[i] + noiseStd_ * randn_bm()
       )
     }
+  }
 
-
+  createNewSerieObject = (signal) => {
     if (this.tagCreation.trim() === '') {
       this.tagCreation = `tag-${getHigherId(this.series) + 1}`
     }
@@ -160,14 +206,17 @@ class DataStore {
       id: getHigherId(this.series) + 1,
       faultAdded: false,
     }
-    this.series.push(serie)
+    return serie
   }
+
   handleNumberPointsCreation = (e) => {
     this.numberPointsCreation = e.target.value
   }
+
   handleTagCreation = (e) => {
     this.tagCreation = e.target.value
   }
+
   handleNoiseAddition = (e) => {
     this.noiseStd = e.target.value
   }
@@ -194,17 +243,21 @@ class DataStore {
       })
   }
   handleGBNCreation = () => {
-    const paramsTest = {
-      tspan: [1, 3, 4, 5, 6],
-      low: [-1],
-      upp: [1],
-      prob: [0.95],
-      min_const: [0],
+    const params = {
+      tspan: Array(this.numberPointsCreation).fill(0).map((v, i) => i),
+      low: [this.faultStores.gbn.low_value],
+      upp: [this.faultStores.gbn.upp_value],
+      prob: [this.faultStores.gbn.prob_change],
+      min_const: [this.faultStores.gbn.min_constant],
     }
-    this.apiRPCComm('Signal.gbn', paramsTest, this.cbSignalCreated, console.log)
+    this.apiRPCComm('Signal.gbn', params, this.cbSignalCreated, console.log)
   }
-  cbSignalCreated = (signal) => {
-
+  cbSignalCreated = (signalRaw) => {
+    const signal = signalRaw.map(v => v[0])
+    console.log(signal)
+    this.addNoise(signal)
+    const serie = this.createNewSerieObject(signal)
+    this.series.push(serie)
   }
 
 
@@ -227,6 +280,7 @@ decorate(DataStore, {
   handleTagCreation: action,
   noiseStd: observable,
   handleNoiseAddition: action,
+  currFaultConfig: observable,
 })
 
 

@@ -63,7 +63,8 @@ class EnhancedTable extends React.Component {
   }
 
   handleDeleteClick = (selected, storeGlobal) => {
-    const { store } = storeGlobal
+    const store = this.props.store.store
+    // const { store } = storeGlobal
     store.handleDeleteTableClick(selected)
     this.setState({ selected: [] })
   }
