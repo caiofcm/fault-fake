@@ -22,21 +22,7 @@ const styles = theme => ({
   },
 })
 
-class RandomGBN extends React.Component {
-
-  // handleFaultConfig = (e) => {
-  //   let val
-  //   if (e.target.name === 'min_constant'){
-  //     val = parseInt(e.target.value)
-  //   }
-  //   else {
-  //     val = parseFloat(e.target.value)
-  //   }
-  //   let faultConfig = {...this.dataStore.faultConfig}
-  //   // this.dataStore.faultStores.gbn
-  //   faultConfig[e.target.name] = val
-  //   // this.dataStore.handleFaultConfig(faultConfig)
-  // }
+class RandomWalk extends React.Component {
 
 
   render() {
@@ -46,49 +32,49 @@ class RandomGBN extends React.Component {
     return (
       <form className={""}>
         <TextField
-          label="Lower Value"
-          value={this.dataStore.faultStores.gbn.low_value}
-          onChange={this.dataStore.faultStores.gbn.handleModifyValue}
+          label="Starting Value"
+          value={this.dataStore.faultStores.randomWalk.start_val}
+          onChange={this.dataStore.faultStores.randomWalk.handleModifyValue}
           type="number"
           className={classes.textField}
           // margin="normal"
           variant="outlined"
-          name="low_value"
+          name="start_val"
         />
         <TextField
-          label="Upper Value"
-          value={this.dataStore.faultStores.gbn.upp_value}
-          onChange={this.dataStore.faultStores.gbn.handleModifyValue}
+          label="Probability Down"
+          value={this.dataStore.faultStores.randomWalk.prob_down}
+          onChange={this.dataStore.faultStores.randomWalk.handleModifyValue}
           type="number"
           className={classes.textField}
           // margin="normal"
           variant="outlined"
-          name="upp_value"
+          name="prob_down"
         />
         <TextField
-          label="Probability change"
-          value={this.dataStore.faultStores.gbn.prob_change}
-          onChange={this.dataStore.faultStores.gbn.handleModifyValue}
+          label="Probability Up"
+          value={this.dataStore.faultStores.randomWalk.prob_up}
+          onChange={this.dataStore.faultStores.randomWalk.handleModifyValue}
           type="number"
           className={classes.textField}
           // margin="normal"
           variant="outlined"
-          name="prob_change"
+          name="prob_up"
         />
         <TextField
-          label="Min. constant"
-          value={this.dataStore.faultStores.gbn.min_constant}
-          onChange={this.dataStore.faultStores.gbn.handleModifyValue}
+          label="Amplitude"
+          value={this.dataStore.faultStores.randomWalk.amplitude}
+          onChange={this.dataStore.faultStores.randomWalk.handleModifyValue}
           type="number"
           className={classes.textField}
           // margin="normal"
           variant="outlined"
-          name="min_constant"
+          name="amplitude"
         />
       </form>
     )
   }
 }
 
-const injectedObserved = inject("store")(observer(RandomGBN))
+const injectedObserved = inject("store")(observer(RandomWalk))
 export default withStyles(styles)(injectedObserved)

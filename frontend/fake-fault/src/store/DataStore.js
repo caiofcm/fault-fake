@@ -31,14 +31,31 @@ class GBNStore {
     }
     this[e.target.name] = val
   }
-
 }
-
 decorate(GBNStore, {
   low_value: observable,
   upp_value: observable,
   prob_change: observable,
   min_constant: observable,
+  handleModifyValue: action,
+})
+
+class RandomWalkStore {
+  start_val = -1
+  prob_down = 0.2
+  prob_up = 0.7
+  amplitude = 5
+
+  handleModifyValue = (e) => {
+    const  val = parseFloat(e.target.value)
+    this[e.target.name] = val
+  }
+}
+decorate(RandomWalkStore, {
+  start_val: observable,
+  prob_down: observable,
+  prob_up: observable,
+  amplitude: observable,
   handleModifyValue: action,
 })
 
@@ -55,7 +72,10 @@ class DataStore {
   tagCreation = ''
   noiseStd = 0
   currFaultConfig = {}
-  faultStores = { gbn: new GBNStore() }
+  faultStores = {
+    gbn: new GBNStore(),
+    randomWalk: new RandomWalkStore()
+  }
 
 
   constructor() {
@@ -141,7 +161,7 @@ class DataStore {
 
     this.validateNumberOfPoints()
 
-    switch (this.faultType) {
+    switch (this.faultType.toLowerCase()) {
       case 'constant':
         signal = createConstantSignal({
           faultConfig: this.faultConfig,
@@ -153,6 +173,9 @@ class DataStore {
         break;
       case 'gbn':
         signal = this.handleGBNCreation()
+        break
+      case 'randomwalk':
+        signal = this.handleRandomWalkCreation()
         break
       default:
         break
@@ -206,6 +229,10 @@ class DataStore {
       id: getHigherId(this.series) + 1,
       faultAdded: false,
     }
+
+    // Update tag name for possible next addition
+    this.tagCreation = `tag-${serie.id + 1}`
+
     return serie
   }
 
@@ -242,17 +269,25 @@ class DataStore {
         error_cb(error)
       })
   }
+
   handleGBNCreation = () => {
-    const params = {
-      tspan: Array(this.numberPointsCreation).fill(0).map((v, i) => i),
-      low: [this.faultStores.gbn.low_value],
-      upp: [this.faultStores.gbn.upp_value],
-      prob: [this.faultStores.gbn.prob_change],
-      min_const: [this.faultStores.gbn.min_constant],
+    const tspan = Array(this.numberPointsCreation).fill(0).map((v, i) => i)
+    const params_inner = {
+      low_value: [this.faultStores.gbn.low_value],
+      upp_value: [this.faultStores.gbn.upp_value],
+      prob_change: [this.faultStores.gbn.prob_change],
+      min_constant: [this.faultStores.gbn.min_constant],
     }
-    this.apiRPCComm('Signal.gbn', params, this.cbSignalCreated, console.log)
+    const params = {
+       'tspan': tspan,
+       'type_serie': 'gbn',
+       'params': params_inner,
+    }
+    this.apiRPCComm('Signal.create_signal', params, this.cbSignalCreated, console.log)
   }
+
   cbSignalCreated = (signalRaw) => {
+    console.log(signalRaw)
     const signal = signalRaw.map(v => v[0])
     console.log(signal)
     this.addNoise(signal)
@@ -260,7 +295,21 @@ class DataStore {
     this.series.push(serie)
   }
 
-
+  handleRandomWalkCreation = () => {
+    const tspan = Array(this.numberPointsCreation).fill(0).map((v, i) => i)
+    const params_inner = {
+      start_val: [this.faultStores.randomWalk.start_val],
+      prob_down: [this.faultStores.randomWalk.prob_down],
+      prob_up: [this.faultStores.randomWalk.prob_up],
+      amplitude: [this.faultStores.randomWalk.amplitude],
+    }
+    const params = {
+      'tspan': tspan,
+      'type_serie': 'random_walk',
+      'params': params_inner,
+    }
+    this.apiRPCComm('Signal.create_signal', params, this.cbSignalCreated, console.log)
+  }
 
 }
 

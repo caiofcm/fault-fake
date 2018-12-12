@@ -1,8 +1,9 @@
 import React from 'react'
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom'
 import { FormControl, InputLabel, Select, OutlinedInput, MenuItem, withStyles, TextField } from '@material-ui/core';
-import ConstantFault from './ConstantFault';
-import RandomGBN from './RandomGBN';
+import ConstantFault from './ConstantFault'
+import RandomGBN from './RandomGBN'
+import RandomWalk from './RandomWalk'
 import { observer, inject } from 'mobx-react'
 
 
@@ -25,7 +26,7 @@ const styles = theme => ({
 const faultTypesSelections = [
   { value: 'constant', label: 'Constant' },
   { value: 'gbn', label: 'GBN' },
-  { value: 'arima', label: 'ARIMA' },
+  { value: 'randomwalk', label: 'Random Walk' },
   { value: 'ramp', label: 'Ramp' },
   { value: 'senoidal', label: 'Senoidal' },
 ]
@@ -68,6 +69,11 @@ class SignalCreation extends React.Component {
           <RandomGBN
           >
           </RandomGBN>)
+      case 'randomwalk':
+        return (
+          <RandomWalk
+          >
+          </RandomWalk>)
       default:
         break;
     }
