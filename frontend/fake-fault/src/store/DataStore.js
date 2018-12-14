@@ -181,7 +181,7 @@ class DataStore {
         this.series.push(serie)
         break;
       case 'gbn':
-        signal = this.handleGBNCreation(this.numberPointsCreation)
+        signal = this.handleGBNCreation(this.numberPointsCreation, this.cbSignalCreated, console.log)
         break
       case 'randomwalk':
         signal = this.handleRandomWalkCreation()
@@ -189,40 +189,6 @@ class DataStore {
       default:
         break
     }
-
-    // Fault Editing:
-
-    // Editing for GBN:
-    function editGBNSignal(index, bounds) {
-      const num_points = bounds.uppBound - bounds.lowBound + 1
-      this.handleGBNCreation(num_points)
-      const s = this.series[index].values
-      const s_sub = s.subarray(2, 4)
-      for (let i = 0; i < s_sub.length; i++) {
-        s_sub[i] = s_sub[i] + signal[i]
-      }
-    }
-
-
-
-    // const noiseStd_ = parseFloat(this.noiseStd)
-    // if (noiseStd_ > 0) {
-    //   signal.forEach((o, i, a) =>
-    //     a[i] = a[i] + noiseStd_ * randn_bm()
-    //   )
-    // }
-
-
-    // if (this.tagCreation.trim() === '') {
-    //   this.tagCreation = `tag-${getHigherId(this.series) + 1}`
-    // }
-    // const serie = {
-    //   tag: this.tagCreation,
-    //   values: signal,
-    //   id: getHigherId(this.series) + 1,
-    //   faultAdded: false,
-    // }
-    // this.series.push(serie)
   }
 
   validateNumberOfPoints = () => {
@@ -269,6 +235,26 @@ class DataStore {
   handleNoiseAddition = (e) => {
     this.noiseStd = e.target.value
   }
+
+  // Fault Editing:
+
+  // Editing for GBN:
+  editGBNSignal = (index, bounds) => {
+    const num_points = bounds.uppBound - bounds.lowBound + 1
+    this.handleGBNCreation(num_points, this.cbSignalCreatedToEditFault, console.log)
+    const s = this.series[index].values
+    const s_sub = s.subarray(2, 4)
+    for (let i = 0; i < s_sub.length; i++) {
+      s_sub[i] = s_sub[i] + s[i]
+    }
+  }
+  // cbSignalCreatedToEditFault = (signalRaw) => {
+  //   console.log(signalRaw)
+  //   const signal = signalRaw.map(v => v[0])
+  //   console.log(signal)
+  //   const serie = this.createNewSerieObject(signal)
+  //   this.series.push(serie)
+  // }
 
 
 
