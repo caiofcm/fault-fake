@@ -111,7 +111,35 @@ function randn_bm() {
 const UUIDgeneration = function () {
   // http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) { var r = Math.random() * 16 | 0, v = c == 'x' ? r : r & 0x3 | 0x8; return v.toString(16); });
-};
+}
+
+// function make_subarray(array, from, to) {
+//   return {
+//     get: function (i) {
+//       return array[i + from]
+//     },
+//     length: to - from
+//   }
+// }
+
+// ref: https://stackoverflow.com/questions/24065411/javascript-subarray-without-copying
+Array.prototype.subarray = function (i, j) {
+  var self = this, arr = [];
+  for (var n = 0; i <= j; i++ , n++) {
+    (function (i) {
+      Object.defineProperty(arr, n, {       //Array is an Object
+        get: function () {
+          return self[i];
+        },
+        set: function (value) {
+          self[i] = value;
+          return value;
+        }
+      });
+    })(i);
+  }
+  return arr;
+}
 
 export {
   constantFault,
@@ -122,4 +150,5 @@ export {
   createConstantSignal,
   randn_bm,
   UUIDgeneration,
+  // make_subarray
 }

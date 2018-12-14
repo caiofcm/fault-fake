@@ -138,18 +138,6 @@ class EditFaults extends Component {
             >
             </FormEdit>
           </div>
-          {/* <div className={classes.wrapButtons}>
-            <Button
-              variant="contained" color="primary" className={classes.button}
-              onClick={(e) => this.handleEdit(e, id, store)}>
-              Edit
-              </Button>
-            <Button
-              variant="contained" color="secondary" className={classes.button}
-              onClick={this.handleBackBut}>
-              Back
-            </Button>
-          </div> */}
           <ConfirmBackButtons
             handleOkButton={(e) => this.handleEdit(e, id, store)}
             confirmLabel='Edit'

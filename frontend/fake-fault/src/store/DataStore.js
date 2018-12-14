@@ -135,12 +135,21 @@ class DataStore {
           faultConfig: this.faultConfig,
           bounds
         })
+        this.series[index].values = signal
         break;
-
+      case 'gbn':
+        this.editGBNSignal(index, bounds)
+        // s.forEach((o, i, a) => {
+        //   if (i >= bounds.lowBound && i <= bounds.uppBound) {
+        //     a[i] = a[i] + signal[]
+        //   }
+        // }
+        // )
+        // .values = signal
+        break //stopped here, this is not correct because of async
       default:
         break;
     }
-    this.series[index].values = signal
     this.series[index].faultAdded = 'Yes'
   }
 
@@ -172,13 +181,26 @@ class DataStore {
         this.series.push(serie)
         break;
       case 'gbn':
-        signal = this.handleGBNCreation()
+        signal = this.handleGBNCreation(this.numberPointsCreation)
         break
       case 'randomwalk':
         signal = this.handleRandomWalkCreation()
         break
       default:
         break
+    }
+
+    // Fault Editing:
+
+    // Editing for GBN:
+    function editGBNSignal(index, bounds) {
+      const num_points = bounds.uppBound - bounds.lowBound + 1
+      this.handleGBNCreation(num_points)
+      const s = this.series[index].values
+      const s_sub = s.subarray(2, 4)
+      for (let i = 0; i < s_sub.length; i++) {
+        s_sub[i] = s_sub[i] + signal[i]
+      }
     }
 
 
@@ -270,8 +292,8 @@ class DataStore {
       })
   }
 
-  handleGBNCreation = () => {
-    const tspan = Array(this.numberPointsCreation).fill(0).map((v, i) => i)
+  handleGBNCreation = (number_points, cb_resolved, cb_error) => {
+    const tspan = Array(number_points).fill(0).map((v, i) => i)
     const params_inner = {
       low_value: [this.faultStores.gbn.low_value],
       upp_value: [this.faultStores.gbn.upp_value],
@@ -283,7 +305,7 @@ class DataStore {
        'type_serie': 'gbn',
        'params': params_inner,
     }
-    this.apiRPCComm('Signal.create_signal', params, this.cbSignalCreated, console.log)
+    this.apiRPCComm('Signal.create_signal', params, cb_resolved, cb_error)
   }
 
   cbSignalCreated = (signalRaw) => {
