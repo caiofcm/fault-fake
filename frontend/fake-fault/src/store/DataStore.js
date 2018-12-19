@@ -1,9 +1,10 @@
 // import { observer } from 'mobx-react';
-import { observable, computed, decorate, autorun } from "mobx"
+import { observable, computed, decorate, autorun, runInAction } from "mobx"
 // import mobx from "mobx"
 import { constantFault, processData, computeTableData, getHigherId, createConstantSignal, randn_bm, UUIDgeneration } from "../utils/utils";
 import { action, toJS } from "mobx"
 import axios from 'axios';
+import { GBNStore } from './signalsStore'
 
 const LEN = 50
 const randomArray = (length, max) => [...new Array(length)]
@@ -15,30 +16,7 @@ const dataInitial = [
   { tag: 'tag3', values: randomArray(LEN, 1.0), id: 3, faultAdded: false },
 ]
 
-class GBNStore {
-  low_value = -1
-  upp_value = 10
-  prob_change = 0.95
-  min_constant = 5
 
-  handleModifyValue = (e) => {
-    let val
-    if (e.target.name === 'min_constant') {
-      val = parseInt(e.target.value)
-    }
-    else {
-      val = parseFloat(e.target.value)
-    }
-    this[e.target.name] = val
-  }
-}
-decorate(GBNStore, {
-  low_value: observable,
-  upp_value: observable,
-  prob_change: observable,
-  min_constant: observable,
-  handleModifyValue: action,
-})
 
 class RandomWalkStore {
   start_val = -1
@@ -58,10 +36,6 @@ decorate(RandomWalkStore, {
   amplitude: observable,
   handleModifyValue: action,
 })
-
-// The idea was to add a small Store for each type of fault, such that its state can be represented accordingly
-// Thus, todo is to create a list of store, check if this is ok... they would be the possible ones
-// Also faultConfig would refer to it...
 
 class DataStore {
   series = dataInitial
@@ -135,18 +109,15 @@ class DataStore {
           faultConfig: this.faultConfig,
           bounds
         })
-        this.series[index].values = signal
+        // this.series[index].values = signal
+        this.modifySerieValues(index, signal)
         break;
       case 'gbn':
-        this.editGBNSignal(index, bounds)
-        // s.forEach((o, i, a) => {
-        //   if (i >= bounds.lowBound && i <= bounds.uppBound) {
-        //     a[i] = a[i] + signal[]
-        //   }
-        // }
-        // )
-        // .values = signal
-        break //stopped here, this is not correct because of async
+        this.editSignal(index, bounds, this.rpcForGBN)
+        break
+      case 'randomwalk':
+        this.editSignal(index, bounds, this.rpcForRandomWalk)
+        break
       default:
         break;
     }
@@ -181,10 +152,10 @@ class DataStore {
         this.series.push(serie)
         break;
       case 'gbn':
-        signal = this.handleGBNCreation(this.numberPointsCreation, this.cbSignalCreated, console.log)
+        this.handleGBNCreation(this.numberPointsCreation)
         break
       case 'randomwalk':
-        signal = this.handleRandomWalkCreation()
+        this.handleRandomWalkCreation()
         break
       default:
         break
@@ -240,21 +211,42 @@ class DataStore {
 
   // Editing for GBN:
   editGBNSignal = (index, bounds) => {
-    const num_points = bounds.uppBound - bounds.lowBound + 1
-    this.handleGBNCreation(num_points, this.cbSignalCreatedToEditFault, console.log)
     const s = this.series[index].values
-    const s_sub = s.subarray(2, 4)
-    for (let i = 0; i < s_sub.length; i++) {
-      s_sub[i] = s_sub[i] + s[i]
-    }
+    const s_sub = s.subarray(bounds.lowBound, bounds.uppBound)
+    const num_points = bounds.uppBound - bounds.lowBound + 1
+    this.rpcForGBN(num_points)
+      .then(res => {
+        const signal_created = res.data.map(v => v[0])
+        for (let i = 0; i < s_sub.length; i++) {
+          const former = s_sub[i]
+          s_sub[i] = former + signal_created[i]
+        }
+        const s_copied = [...s]
+        this.modifySerieValues(index, s_copied)
+      })
   }
-  // cbSignalCreatedToEditFault = (signalRaw) => {
-  //   console.log(signalRaw)
-  //   const signal = signalRaw.map(v => v[0])
-  //   console.log(signal)
-  //   const serie = this.createNewSerieObject(signal)
-  //   this.series.push(serie)
-  // }
+
+  // Editing for RandomWalk:
+  editSignal = (index, bounds, rpcFunction) => {
+    const s = this.series[index].values
+    const s_sub = s.subarray(bounds.lowBound, bounds.uppBound)
+    const num_points = bounds.uppBound - bounds.lowBound + 1
+    rpcFunction(num_points)
+      .then(res => {
+        const signal_created = res.data.map(v => v[0])
+        for (let i = 0; i < s_sub.length; i++) {
+          const former = s_sub[i]
+          s_sub[i] = former + signal_created[i]
+        }
+        const s_copied = [...s]
+        this.modifySerieValues(index, s_copied)
+      })
+  }
+
+  // ACTIONS THAT MODIFY STATE DIRECT (TO BE ADDED HERE)
+  modifySerieValues = (index, new_vals) => {
+    this.series[index].values = new_vals
+  }
 
 
 
@@ -262,23 +254,17 @@ class DataStore {
   //--------------------
   // Communication with Python
   //--------------------
-  apiRPCComm = (method, params, resolve_cb, error_cb) => {
+  apiRPCComm = (method, params) => {
     const url = 'http://localhost:5000/api'
-    axios.post(url, {
+    return axios.post(url, {
       jsonrpc: "2.0",
       method: method,
       params: params,
       id: UUIDgeneration(),
     })
-      .then(function (response) {
-        resolve_cb(response.data)
-      })
-      .catch(function (error) {
-        error_cb(error)
-      })
   }
 
-  handleGBNCreation = (number_points, cb_resolved, cb_error) => {
+  rpcForGBN = (number_points) => {
     const tspan = Array(number_points).fill(0).map((v, i) => i)
     const params_inner = {
       low_value: [this.faultStores.gbn.low_value],
@@ -287,11 +273,37 @@ class DataStore {
       min_constant: [this.faultStores.gbn.min_constant],
     }
     const params = {
-       'tspan': tspan,
-       'type_serie': 'gbn',
-       'params': params_inner,
+      'tspan': tspan,
+      'type_serie': 'gbn',
+      'params': params_inner,
     }
-    this.apiRPCComm('Signal.create_signal', params, cb_resolved, cb_error)
+    return this.apiRPCComm('Signal.create_signal', params)
+  }
+
+  rpcForRandomWalk = (num_points) => {
+    const tspan = Array(num_points).fill(0).map((v, i) => i)
+    const params_inner = {
+      start_val: [this.faultStores.randomWalk.start_val],
+      prob_down: [this.faultStores.randomWalk.prob_down],
+      prob_up: [this.faultStores.randomWalk.prob_up],
+      amplitude: [this.faultStores.randomWalk.amplitude],
+    }
+    const params = {
+      'tspan': tspan,
+      'type_serie': 'random_walk',
+      'params': params_inner,
+    }
+    return this.apiRPCComm('Signal.create_signal', params)
+  }
+
+  handleGBNCreation = (number_points) => {
+    this.rpcForGBN(number_points)
+      .then(res => {
+        this.cbSignalCreated(res.data)
+      })
+      .catch(err => {
+        console.log('ERROR', err);
+      })
   }
 
   cbSignalCreated = (signalRaw) => {
@@ -304,20 +316,12 @@ class DataStore {
   }
 
   handleRandomWalkCreation = () => {
-    const tspan = Array(this.numberPointsCreation).fill(0).map((v, i) => i)
-    const params_inner = {
-      start_val: [this.faultStores.randomWalk.start_val],
-      prob_down: [this.faultStores.randomWalk.prob_down],
-      prob_up: [this.faultStores.randomWalk.prob_up],
-      amplitude: [this.faultStores.randomWalk.amplitude],
-    }
-    const params = {
-      'tspan': tspan,
-      'type_serie': 'random_walk',
-      'params': params_inner,
-    }
-    this.apiRPCComm('Signal.create_signal', params, this.cbSignalCreated, console.log)
+    this.rpcForRandomWalk(this.numberPointsCreation)
+      .then(res => this.cbSignalCreated(res.data))
+      .catch(err => console.log('ERROR', err))
   }
+
+  // array_of_array_to_1d = (arr) => arr.map(v => v[0])
 
 }
 
@@ -338,6 +342,10 @@ decorate(DataStore, {
   noiseStd: observable,
   handleNoiseAddition: action,
   currFaultConfig: observable,
+  modifySerieValues: action,
+  handleEditFaultWithBounds: action,
+  editGBNSignal: action,
+  rpcForGBN: action,
 })
 
 
