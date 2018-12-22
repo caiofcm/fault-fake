@@ -5,6 +5,7 @@ import ConstantFault from './ConstantFault'
 import RandomGBN from './RandomGBN'
 import RandomWalk from './RandomWalk'
 import { observer, inject } from 'mobx-react'
+import Ramp from './Ramp';
 
 
 const styles = theme => ({
@@ -74,6 +75,10 @@ class SignalCreation extends React.Component {
           <RandomWalk
           >
           </RandomWalk>)
+      case 'ramp':
+        return (
+          <Ramp>
+          </Ramp>)
       default:
         break;
     }

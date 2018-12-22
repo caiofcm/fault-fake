@@ -10,20 +10,10 @@ import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
-import Badge from '@material-ui/core/Badge';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import { mainListItems } from './listitems';
-// import SimpleLineChart from '../components/SimpleLineChart/SimpleLineChart';
-// import Table from '../components/Table/Table';
-// import LoadSeries from '../components/LoadSeries/LoadSeries';
-// import CreateSeries from '../components/CreateSeries/CreateSeries';
-// import { Route, Switch } from "react-router-dom"
-// import { Route, Switch, withRouter } from "react-router"
-// import EditFaults from '../components/EditFaults/EditFaults';
-// import Visualize from '../components/Visualize/Visualize';
-// import Import from '../components/Import/SendToServerExample';
 import { observer, inject } from 'mobx-react'
 import { MobxRouter } from 'mobx-router'
 
@@ -159,11 +149,6 @@ class Dashboard extends React.Component {
             >
               Fake Fault Builder
             </Typography>
-            <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
           </Toolbar>
         </AppBar>
         <Drawer

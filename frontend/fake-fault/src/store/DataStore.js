@@ -1,10 +1,7 @@
-// import { observer } from 'mobx-react';
 import { observable, computed, decorate, autorun, runInAction } from "mobx"
-// import mobx from "mobx"
 import { constantFault, processData, computeTableData, getHigherId, createConstantSignal, randn_bm, UUIDgeneration } from "../utils/utils";
-import { action, toJS } from "mobx"
-import axios from 'axios';
-import { GBNStore } from './signalsStore'
+import { action } from "mobx"
+import { GBNStore, RandomWalkStore, RampStore } from './signalsStore'
 
 const LEN = 50
 const randomArray = (length, max) => [...new Array(length)]
@@ -17,26 +14,6 @@ const dataInitial = [
 ]
 
 
-
-class RandomWalkStore {
-  start_val = -1
-  prob_down = 0.2
-  prob_up = 0.7
-  amplitude = 5
-
-  handleModifyValue = (e) => {
-    const  val = parseFloat(e.target.value)
-    this[e.target.name] = val
-  }
-}
-decorate(RandomWalkStore, {
-  start_val: observable,
-  prob_down: observable,
-  prob_up: observable,
-  amplitude: observable,
-  handleModifyValue: action,
-})
-
 class DataStore {
   series = dataInitial
   appendImportedSeries = false
@@ -48,13 +25,14 @@ class DataStore {
   currFaultConfig = {}
   faultStores = {
     gbn: new GBNStore(),
-    randomWalk: new RandomWalkStore()
+    randomWalk: new RandomWalkStore(),
+    ramp: new RampStore(),
   }
 
 
-  constructor() {
-    autorun(() => console.log('AutoRun called'))
-  }
+  // constructor() {
+  //   autorun(() => console.log('AutoRun called'))
+  // }
 
   //--------------------
   // Import Data
@@ -113,10 +91,15 @@ class DataStore {
         this.modifySerieValues(index, signal)
         break;
       case 'gbn':
-        this.editSignal(index, bounds, this.rpcForGBN)
+        this.editSignal(
+          index, bounds, this.faultStores.gbn.rpc
+        )
         break
       case 'randomwalk':
-        this.editSignal(index, bounds, this.rpcForRandomWalk)
+        this.editSignal(index, bounds, this.faultStores.randomWalk.rpc)
+        break
+      case 'ramp':
+        this.editSignal(index, bounds, this.faultStores.ramp.rpc)
         break
       default:
         break;
@@ -152,10 +135,13 @@ class DataStore {
         this.series.push(serie)
         break;
       case 'gbn':
-        this.handleGBNCreation(this.numberPointsCreation)
+        this.handleSerieCreation(this.faultStores.gbn.rpc)
         break
       case 'randomwalk':
-        this.handleRandomWalkCreation()
+        this.handleSerieCreation(this.faultStores.randomWalk.rpc)
+        break
+      case 'ramp':
+        this.handleSerieCreation(this.faultStores.ramp.rpc)
         break
       default:
         break
@@ -208,24 +194,6 @@ class DataStore {
   }
 
   // Fault Editing:
-
-  // Editing for GBN:
-  editGBNSignal = (index, bounds) => {
-    const s = this.series[index].values
-    const s_sub = s.subarray(bounds.lowBound, bounds.uppBound)
-    const num_points = bounds.uppBound - bounds.lowBound + 1
-    this.rpcForGBN(num_points)
-      .then(res => {
-        const signal_created = res.data.map(v => v[0])
-        for (let i = 0; i < s_sub.length; i++) {
-          const former = s_sub[i]
-          s_sub[i] = former + signal_created[i]
-        }
-        const s_copied = [...s]
-        this.modifySerieValues(index, s_copied)
-      })
-  }
-
   // Editing for RandomWalk:
   editSignal = (index, bounds, rpcFunction) => {
     const s = this.series[index].values
@@ -243,85 +211,23 @@ class DataStore {
       })
   }
 
+  handleSerieCreation = (rpcFunction) => {
+    rpcFunction(this.numberPointsCreation)
+      .then(res => this.cbSignalCreated(res.data))
+      .catch(err => console.log('ERROR', err))
+  }
+
   // ACTIONS THAT MODIFY STATE DIRECT (TO BE ADDED HERE)
   modifySerieValues = (index, new_vals) => {
     this.series[index].values = new_vals
   }
-
-
-
-
-  //--------------------
-  // Communication with Python
-  //--------------------
-  apiRPCComm = (method, params) => {
-    const url = 'http://localhost:5000/api'
-    return axios.post(url, {
-      jsonrpc: "2.0",
-      method: method,
-      params: params,
-      id: UUIDgeneration(),
-    })
-  }
-
-  rpcForGBN = (number_points) => {
-    const tspan = Array(number_points).fill(0).map((v, i) => i)
-    const params_inner = {
-      low_value: [this.faultStores.gbn.low_value],
-      upp_value: [this.faultStores.gbn.upp_value],
-      prob_change: [this.faultStores.gbn.prob_change],
-      min_constant: [this.faultStores.gbn.min_constant],
-    }
-    const params = {
-      'tspan': tspan,
-      'type_serie': 'gbn',
-      'params': params_inner,
-    }
-    return this.apiRPCComm('Signal.create_signal', params)
-  }
-
-  rpcForRandomWalk = (num_points) => {
-    const tspan = Array(num_points).fill(0).map((v, i) => i)
-    const params_inner = {
-      start_val: [this.faultStores.randomWalk.start_val],
-      prob_down: [this.faultStores.randomWalk.prob_down],
-      prob_up: [this.faultStores.randomWalk.prob_up],
-      amplitude: [this.faultStores.randomWalk.amplitude],
-    }
-    const params = {
-      'tspan': tspan,
-      'type_serie': 'random_walk',
-      'params': params_inner,
-    }
-    return this.apiRPCComm('Signal.create_signal', params)
-  }
-
-  handleGBNCreation = (number_points) => {
-    this.rpcForGBN(number_points)
-      .then(res => {
-        this.cbSignalCreated(res.data)
-      })
-      .catch(err => {
-        console.log('ERROR', err);
-      })
-  }
-
   cbSignalCreated = (signalRaw) => {
-    console.log(signalRaw)
     const signal = signalRaw.map(v => v[0])
-    console.log(signal)
     this.addNoise(signal)
     const serie = this.createNewSerieObject(signal)
     this.series.push(serie)
   }
 
-  handleRandomWalkCreation = () => {
-    this.rpcForRandomWalk(this.numberPointsCreation)
-      .then(res => this.cbSignalCreated(res.data))
-      .catch(err => console.log('ERROR', err))
-  }
-
-  // array_of_array_to_1d = (arr) => arr.map(v => v[0])
 
 }
 
@@ -344,8 +250,7 @@ decorate(DataStore, {
   currFaultConfig: observable,
   modifySerieValues: action,
   handleEditFaultWithBounds: action,
-  editGBNSignal: action,
-  rpcForGBN: action,
+  handleSerieCreation: action,
 })
 
 

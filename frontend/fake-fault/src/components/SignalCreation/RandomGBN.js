@@ -24,21 +24,6 @@ const styles = theme => ({
 
 class RandomGBN extends React.Component {
 
-  // handleFaultConfig = (e) => {
-  //   let val
-  //   if (e.target.name === 'min_constant'){
-  //     val = parseInt(e.target.value)
-  //   }
-  //   else {
-  //     val = parseFloat(e.target.value)
-  //   }
-  //   let faultConfig = {...this.dataStore.faultConfig}
-  //   // this.dataStore.faultStores.gbn
-  //   faultConfig[e.target.name] = val
-  //   // this.dataStore.handleFaultConfig(faultConfig)
-  // }
-
-
   render() {
     const { classes } = this.props
     this.dataStore = this.props.store.store
