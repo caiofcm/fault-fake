@@ -40,23 +40,24 @@ class GBNStore {
   min_constant = 5
 
   handleModifyValue = (e) => {
-    let val
-    if (e.target.name === 'min_constant') {
-      val = parseInt(e.target.value)
-    }
-    else {
-      val = parseFloat(e.target.value)
-    }
-    this[e.target.name] = val
+    // let val
+    // if (e.target.name === 'min_constant') {
+    //   val = parseInt(e.target.value)
+    // }
+    // else {
+    //   val = parseFloat(e.target.value)
+    // }
+    this[e.target.name] = e.target.value
   }
 
   rpc = (number_points) => {
+    // this.validateInputs
     const tspan = Array(number_points).fill(0).map((v, i) => i)
     const params_inner = {
-      low_value: [this.low_value],
-      upp_value: [this.upp_value],
-      prob_change: [this.prob_change],
-      min_constant: [this.min_constant],
+      low_value: [parseFloat(this.low_value)],
+      upp_value: [parseFloat(this.upp_value)],
+      prob_change: [parseFloat(this.prob_change)],
+      min_constant: [parseInt(this.min_constant)],
     }
     const params = {
       'tspan': tspan,
@@ -92,17 +93,17 @@ class RandomWalkStore {
   amplitude = 5
 
   handleModifyValue = (e) => {
-    const val = parseFloat(e.target.value)
+    const val = e.target.value
     this[e.target.name] = val
   }
 
   rpc = (num_points) => {
     const tspan = Array(num_points).fill(0).map((v, i) => i)
     const params_inner = {
-      start_val: [this.start_val],
-      prob_down: [this.prob_down],
-      prob_up: [this.prob_up],
-      amplitude: [this.amplitude],
+      start_val: [parseFloat(this.start_val)],
+      prob_down: [parseFloat(this.prob_down)],
+      prob_up: [parseFloat(this.prob_up)],
+      amplitude: [parseFloat(this.amplitude)],
     }
     const params = {
       'tspan': tspan,
@@ -145,8 +146,8 @@ class RampStore {
   rpc = (num_points) => {
     const tspan = Array(num_points).fill(0).map((v, i) => i)
     const params_inner = {
-      start_vals: [this.start_vals],
-      final_vals: [this.final_vals],
+      start_vals: [parseFloat(this.start_vals)],
+      final_vals: [parseFloat(this.final_vals)],
     }
     const params = {
       'tspan': tspan,
