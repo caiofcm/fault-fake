@@ -1,0 +1,4 @@
+
+        [console_scripts]
+        createsignal=signal_generator.cli:main
+    
