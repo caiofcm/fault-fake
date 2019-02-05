@@ -5,6 +5,7 @@ import { constantFault, processData, computeTableData, getHigherId, createConsta
 import { action, toJS } from "mobx"
 import axios from 'axios';
 
+const URL_SIGNAL_CREATION = 'https://us-central1-cm-signal-generator.cloudfunctions.net/signal_gen_http'
 const LEN = 50
 const randomArray = (length, max) => [...new Array(length)]
   .map(() => (Math.random() * max));
