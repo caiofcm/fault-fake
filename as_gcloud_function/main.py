@@ -43,6 +43,8 @@ def signal_gen_http(request):
     }
     signal = signals.create_signals(d)
     signal_json = jsonify(signal.tolist())
+    response.headers.set('Access-Control-Allow-Origin', '*') #MODIFY IT
+    response.headers.set('Access-Control-Allow-Methods', 'GET, POST')
     # if request_json and 'method' in request_json:
 
     # if request_json and 'name' in request_json:
