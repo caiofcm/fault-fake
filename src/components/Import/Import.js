@@ -59,8 +59,8 @@ class Import extends React.Component {
   handleSubmit = (e) => {
     e.preventDefault()
     const dataStore = this.props.store.store
-    console.log('aow', e)
-    console.log('aow', this.fileAtt)
+    // console.log('aow', e)
+    // console.log('aow', this.fileAtt)
     const fileReader = new FileReader();
     fileReader.onloadend = dataStore.importSeriesFromFile
     fileReader.readAsText(this.fileAtt)

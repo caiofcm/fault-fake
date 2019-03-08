@@ -1,8 +1,10 @@
 from signalgenerator.signal_generator import signals
 from flask import escape, jsonify
+# from flask_cors import cross_origin
 # from signalgenerator.signal_generator import utils
 
 # [START functions_helloworld_http]
+# @cross_origin()
 def signal_gen_http(request):
     """HTTP Cloud Function.
     Args:
@@ -28,6 +30,26 @@ def signal_gen_http(request):
           }
       }
     """
+
+
+    # Set CORS headers for the preflight request
+    if request.method == 'OPTIONS':
+        # Allows GET requests from any origin with the Content-Type
+        # header and caches preflight response for an 3600s
+        headers = {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET',
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Max-Age': '3600'
+        }
+
+        return ('', 204, headers)
+
+    # Set CORS headers for the main request
+    headers = {
+        'Access-Control-Allow-Origin': '*'
+    }
+
     request_json = request.get_json(silent=True)
     # request_args = request.args
 
@@ -58,15 +80,36 @@ def signal_gen_http(request):
     }
     signal = signals.create_signals(d)
     signal_json = jsonify(signal.tolist())
-    signal_json.headers.set('Access-Control-Allow-Origin', '*') #MODIFY IT
-    signal_json.headers.set('Access-Control-Allow-Methods', 'GET, POST')
-    # if request_json and 'method' in request_json:
+    # signal_json.headers.set('Access-Control-Allow-Origin', '*') #MODIFY IT
+    # signal_json.headers.set('Access-Control-Allow-Methods', 'GET, POST')
+    # signal_json.headers.set('Access-Control-Allow-Headers' , 'Origin, Content-Type, X-Auth-Token')
 
-    # if request_json and 'name' in request_json:
-    #     name = request_json['name']
-    # elif request_args and 'name' in request_args:
-    #     name = request_args['name']
-    # else:
-    #     name = 'World'
-    # return 'Hello {}!'.format(escape(request_json['type_serie']))
-    return signal_json
+
+
+    # return signal_json
+    return (signal_json, 200, headers)  
+
+# def cors_enabled_function(request):
+#     # For more information about CORS and CORS preflight requests, see
+#     # https://developer.mozilla.org/en-US/docs/Glossary/Preflight_request
+#     # for more information.
+
+#     # Set CORS headers for the preflight request
+#     if request.method == 'OPTIONS':
+#         # Allows GET requests from any origin with the Content-Type
+#         # header and caches preflight response for an 3600s
+#         headers = {
+#             'Access-Control-Allow-Origin': '*',
+#             'Access-Control-Allow-Methods': 'GET',
+#             'Access-Control-Allow-Headers': 'Content-Type',
+#             'Access-Control-Max-Age': '3600'
+#         }
+
+#         return ('', 204, headers)
+
+#     # Set CORS headers for the main request
+#     headers = {
+#         'Access-Control-Allow-Origin': '*'
+#     }
+
+#     return ('Hello World!', 200, headers)    

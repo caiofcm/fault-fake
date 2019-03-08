@@ -16,7 +16,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 // import NotificationsIcon from '@material-ui/icons/Notifications'
 import SnackBarInformation from '../components/SnackBarInformation/SnackBarInformation'
 // import CircularProgress from '@material-ui/core/CircularProgress'
-
+import MyLogo from '../assets/android-chrome-512x512.png'
 // import Button from '@material-ui/core/Button';
 
 import { mainListItems } from './listitems'
@@ -113,6 +113,9 @@ const styles = theme => ({
   nested: {
     paddingLeft: theme.spacing.unit * 4,
   },
+  mylogo: {
+    width: '80px',
+  }
 });
 
 class Dashboard extends React.Component {
@@ -122,9 +125,6 @@ class Dashboard extends React.Component {
     open: true,
     openNested: false,
     fakeState: false,
-
-    // open_snackbar: false,
-    // messageInfo: {},
   };
 
   handleDrawerOpen = () => {
@@ -140,17 +140,6 @@ class Dashboard extends React.Component {
   }
 
   showSnackBar = (signal_generating_status, handleCloseSnackBar) => {
-    // let msg
-    // if (signal_generating_status.loading){
-    //   msg = (
-    //     <React.Fragment>
-    //       <CircularProgress />
-    //       <p>{signal_generating_status.message}</p>
-    //     </React.Fragment>
-    //   )
-    // }
-    // else
-    //   msg = signal_generating_status.message
     return (< SnackBarInformation
       open={signal_generating_status.open_snack_bar}
       message={signal_generating_status.message}
@@ -191,11 +180,12 @@ class Dashboard extends React.Component {
             >
               Fake Fault Builder
             </Typography>
-            {/* <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
+            {/* <IconButton color="inherit"> */}
+              {/* <Badge badgeContent={4} color="secondary">
                 <NotificationsIcon />
-              </Badge>
-            </IconButton> */}
+              </Badge> */}
+              <img src={MyLogo} alt="Logo" className={classes.mylogo}/>
+            {/* </IconButton> */}
           </Toolbar>
         </AppBar>
         <Drawer

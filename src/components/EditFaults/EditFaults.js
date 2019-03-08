@@ -56,16 +56,16 @@ class EditFaults extends Component {
   }
 
   handleReLayout = (eventdata) => {
-    console.log(eventdata)
+    // console.log(eventdata)
     if ('xaxis.autorange' in eventdata && 'yaxis.autorange' in eventdata) {
       return
     }
     if (this.state.checkedSelection) {
       const valLow = Math.floor(eventdata['xaxis.range[0]'])
       const valUpp = Math.floor(eventdata['xaxis.range[1]'])
-      console.log(eventdata)
-      console.log(eventdata['xaxis.range[0]'])
-      console.log(this.state.lowBound)
+      // console.log(eventdata)
+      // console.log(eventdata['xaxis.range[0]'])
+      // console.log(this.state.lowBound)
       this.setState({
         lowBound: valLow,
         uppBound: valUpp,
@@ -102,7 +102,7 @@ class EditFaults extends Component {
   }
 
   handleTypeSelection = (event) => {
-    console.log(event);
+    // console.log(event);
     this.setState({ faultType: event.target.value });
   }
 

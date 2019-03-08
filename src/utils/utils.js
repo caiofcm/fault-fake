@@ -7,7 +7,7 @@ function constantFault(inputs) {
   const value = faultConfig.value
   // const serieMod = [...serie]
   // serieMod[bounds.lowBound]
-  console.log(bounds, value)
+  // console.log(bounds, value)
   const serieMod = serie.values.map((v, i) => {
     return (i >= bounds.lowBound && i <= bounds.uppBound) ?
       value : v

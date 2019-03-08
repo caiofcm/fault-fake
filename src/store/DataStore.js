@@ -94,7 +94,6 @@ class DataStore {
   // Import Data
   //--------------------
   importSeriesFromFile = (e) => {
-    console.log(e)
     const content = e.currentTarget.result
     const dataLoaded = processData(content)
     if (this.appendImportedSeries) {
@@ -126,7 +125,6 @@ class DataStore {
       const idx_rm = this.series.findIndex(v => v.id === el)
       this.series.splice(idx_rm, 1)
     })
-    console.log(selected)
     // selected should be a observable
   }
 
@@ -169,15 +167,12 @@ class DataStore {
   // Fault Creation
   //--------------------
   handleFaultTypeSelection = (event) => {
-    console.log(event);
     this.faultType = event.target.value
-    console.log(this.faultType)
   }
   handleFaultConfig = (faultCfg) => {
     this.faultConfig = faultCfg
   }
   handleSignalCreation = () => {
-    console.log(this.faultConfig)
     let signal
 
     this.validateNumberOfPoints()
@@ -313,9 +308,7 @@ class DataStore {
   }
 
   cbSignalCreated = (signalRaw) => {
-    console.log(signalRaw)
     const signal = signalRaw.map(v => v[0])
-    console.log(signal)
     this.addNoise(signal)
     const serie = this.createNewSerieObject(signal)
     this.series.push(serie)

@@ -25,20 +25,20 @@ const views = {
     path: '/visualize',
     component: <Visualize />,
     onEnter: () => {
-      console.log('entering user profile!');
+      // console.log('entering user profile!');
     },
     beforeExit: () => {
-      console.log('exiting user profile!');
+      // console.log('exiting user profile!');
     },
     onParamsChange: (route, params, store) => {
-      console.log('params changed to', params);
+      // console.log('params changed to', params);
     }
   }),
   series: new Route({
     path: '/series/:id',
     component: <EditFaults />,
     onEnter: (route, params) => {
-      console.log(`entering EditFaults with params`, params);
+      // console.log(`entering EditFaults with params`, params);
     }
   }),
   // import: new Route({
