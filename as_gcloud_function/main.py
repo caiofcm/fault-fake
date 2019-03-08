@@ -12,6 +12,21 @@ def signal_gen_http(request):
         The response text, or any set of values that can be turned into a
         Response object using `make_response`
         <http://flask.pocoo.org/docs/1.0/api/#flask.Flask.make_response>.
+
+      Test string:
+      {
+        "method": "Signal.create_signal",
+          "params": {
+            "tspan": [1,2,3],
+            "type_serie": "gbn",
+            "params": {
+              "low_value": [0, -1, 1],
+          "upp_value": [10, 20, 30], 
+              "prob_change": [0.5, 0.5, 0.5],
+              "min_constant": [1, 1, 1]
+            }
+          }
+      }
     """
     request_json = request.get_json(silent=True)
     # request_args = request.args
@@ -43,8 +58,8 @@ def signal_gen_http(request):
     }
     signal = signals.create_signals(d)
     signal_json = jsonify(signal.tolist())
-    response.headers.set('Access-Control-Allow-Origin', '*') #MODIFY IT
-    response.headers.set('Access-Control-Allow-Methods', 'GET, POST')
+    signal_json.headers.set('Access-Control-Allow-Origin', '*') #MODIFY IT
+    signal_json.headers.set('Access-Control-Allow-Methods', 'GET, POST')
     # if request_json and 'method' in request_json:
 
     # if request_json and 'name' in request_json:
